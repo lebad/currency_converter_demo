@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class REVCurrency;
+@class REVDeltaCurrency;
 
 @protocol REVRateServiceProtocol <NSObject>
-- (void)requestCurrentRateForCurrency:(REVCurrency *)currency;
-- (NSDecimalNumber *)receiveCurrentRate;
+- (NSDecimalNumber *)currencyRateForDelta:(REVDeltaCurrency *)delta;
 @end

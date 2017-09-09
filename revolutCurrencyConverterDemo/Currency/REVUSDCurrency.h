@@ -1,13 +1,13 @@
 //
-//  REVCurrency.m
+//  REVUSDCurrency.h
 //  revolutCurrencyConverterDemo
 //
-//  Created by AndreyLebedev on 07/09/2017.
+//  Created by andrey on 09/09/2017.
 //  Copyright © 2017 lebedac. All rights reserved.
 //
 
 #import "REVCurrency.h"
 
-@implementation REVCurrency
+@interface REVUSDCurrency : REVCurrency
 
 @end

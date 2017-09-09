@@ -1,13 +1,13 @@
 //
-//  REVMoney.m
+//  REVGBPMoney.h
 //  revolutCurrencyConverterDemo
 //
-//  Created by AndreyLebedev on 07/09/2017.
+//  Created by andrey on 09/09/2017.
 //  Copyright © 2017 lebedac. All rights reserved.
 //
 
 #import "REVMoney.h"
 
-@implementation REVMoney
+@interface REVGBPMoney : REVMoney
 
 @end
