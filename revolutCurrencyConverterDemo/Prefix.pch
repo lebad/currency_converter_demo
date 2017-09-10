@@ -21,7 +21,6 @@
 #import "REVEURMoney.h"
 #import "REVGBPMoney.h"
 #import "REVWallet.h"
-#import "REVCurrencyConverter.h"
 #import "REVRequestMoney.h"
 #import "REVDeltaCurrency.h"
 
