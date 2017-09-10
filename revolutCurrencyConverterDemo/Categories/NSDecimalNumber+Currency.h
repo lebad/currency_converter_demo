@@ -11,5 +11,6 @@
 @interface NSDecimalNumber (Currency)
 
 - (NSDecimalNumber *)currencyDecimalNumberByRate:(NSDecimalNumber *)rate;
+- (NSDecimalNumber *)currencyDecimalNumberBySubtractingBy:(NSDecimalNumber *)number;
 
 @end
