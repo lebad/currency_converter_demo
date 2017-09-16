@@ -13,6 +13,8 @@
 @property (nonatomic, copy) NSString *code;
 @property (nonatomic, copy) NSString *name;
 
++ (instancetype)currencyWithCode:(NSString *)code;
+
 - (BOOL)isEqualToCurrency:(REVCurrency *)currency;
 
 @end

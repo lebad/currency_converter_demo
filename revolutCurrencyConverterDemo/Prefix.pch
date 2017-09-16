@@ -23,5 +23,8 @@
 #import "REVWallet.h"
 #import "REVRequestMoney.h"
 #import "REVDeltaCurrency.h"
+#import "REVRate.h"
+
+#import "REVChooseCurrencyViewController.h"
 
 #endif /* Prefix_pch */

@@ -16,7 +16,13 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	// Override point for customization after application launch.
+	
+	REVChooseCurrencyViewController *rootVC = [[REVChooseCurrencyViewController alloc] init];
+	UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:rootVC];
+	self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	self.window.rootViewController = navVC;
+	[self.window makeKeyAndVisible];
+	
 	return YES;
 }
 

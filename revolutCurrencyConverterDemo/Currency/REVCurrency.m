@@ -10,6 +10,20 @@
 
 @implementation REVCurrency
 
++ (instancetype)currencyWithCode:(NSString *)code
+{
+	if ([code isEqualToString:@"USD"]) {
+		return [REVUSDCurrency new];
+	}
+	if ([code isEqualToString:@"EUR"]) {
+		return [REVEURCurrency new];
+	}
+	if ([code isEqualToString:@"GBP"]) {
+		return [REVGBPCurrency new];
+	}
+	return [self new];
+}
+
 - (BOOL)isEqual:(id)object {
 	if (object == self)
 		return YES;
