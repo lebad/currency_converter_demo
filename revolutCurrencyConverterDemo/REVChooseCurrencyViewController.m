@@ -7,11 +7,9 @@
 //
 
 #import "REVChooseCurrencyViewController.h"
-#import "REVCurrencyRateAPIService.h"
+#import "REVCurrencyRateTimerServive.h"
 
 @interface REVChooseCurrencyViewController ()
-
-@property (nonatomic, strong) REVCurrencyRateAPIService *APIAervice;
 
 @end
 
@@ -19,9 +17,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	self.APIAervice = [REVCurrencyRateAPIService new];
-	[self.APIAervice getRatesWithCompletion:^(NSArray<REVRate *> *rates, NSError *error) {
-		
+	
+	[[REVCurrencyRateTimerServive shared] getRatesWithCompletion:^(NSArray<REVRate *> *rates, NSError *error) {
+		NSLog(@"RATES:%@", rates);
 	}];
 }
 

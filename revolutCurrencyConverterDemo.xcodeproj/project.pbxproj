@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		550918871F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 550918861F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.m */; };
 		55126CDE1F6D40F8004CBFD6 /* REVChooseCurrencyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55126CDD1F6D40F8004CBFD6 /* REVChooseCurrencyViewController.m */; };
 		5512B6551F63EAF200775DD0 /* REVDeltaCurrency.m in Sources */ = {isa = PBXBuildFile; fileRef = 5512B6541F63EAF200775DD0 /* REVDeltaCurrency.m */; };
 		5512B65A1F63F0D200775DD0 /* REVUSDMoney.m in Sources */ = {isa = PBXBuildFile; fileRef = 5512B6591F63F0D200775DD0 /* REVUSDMoney.m */; };
@@ -17,7 +16,6 @@
 		5512B6691F63F99300775DD0 /* REVEURCurrency.m in Sources */ = {isa = PBXBuildFile; fileRef = 5512B6681F63F99300775DD0 /* REVEURCurrency.m */; };
 		5512B66C1F63F9CE00775DD0 /* REVGBPCurrency.m in Sources */ = {isa = PBXBuildFile; fileRef = 5512B66B1F63F9CD00775DD0 /* REVGBPCurrency.m */; };
 		553085C31F645AC1006D9389 /* NSDecimalNumber+Currency.m in Sources */ = {isa = PBXBuildFile; fileRef = 553085C21F645AC1006D9389 /* NSDecimalNumber+Currency.m */; };
-		557F60561F659ACE00B25317 /* REVCurrencyXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 557F60551F659ACE00B25317 /* REVCurrencyXMLParser.m */; };
 		5598B62C1F63E2810017C0E5 /* REVRequestMoney.m in Sources */ = {isa = PBXBuildFile; fileRef = 5598B62B1F63E2810017C0E5 /* REVRequestMoney.m */; };
 		55AFD3461F616FD900CFCE96 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFD3451F616FD900CFCE96 /* main.m */; };
 		55AFD3491F616FD900CFCE96 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFD3481F616FD900CFCE96 /* AppDelegate.m */; };
@@ -30,6 +28,8 @@
 		55F226221F6D4427004A0565 /* REVCurrencyRateAPIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F226211F6D4427004A0565 /* REVCurrencyRateAPIService.m */; };
 		55F226251F6D4554004A0565 /* REVRate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F226241F6D4554004A0565 /* REVRate.m */; };
 		55F226291F6D49DB004A0565 /* REVCurrencyRateXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F226281F6D49DB004A0565 /* REVCurrencyRateXMLParser.m */; };
+		55F2262C1F6D8EED004A0565 /* REVCurrencyRateTimerServive.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F2262B1F6D8EED004A0565 /* REVCurrencyRateTimerServive.m */; };
+		55F226301F6DB1B4004A0565 /* REVRatesDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F2262F1F6DB1B4004A0565 /* REVRatesDownloader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,9 +43,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		550918851F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVExchangeEURCurrencyAPIService.h; sourceTree = "<group>"; };
-		550918861F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVExchangeEURCurrencyAPIService.m; sourceTree = "<group>"; };
-		5509188A1F658FDB00B7EA07 /* REVExchangeCurrencyAPIServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVExchangeCurrencyAPIServiceProtocol.h; sourceTree = "<group>"; };
 		55126CDC1F6D40F8004CBFD6 /* REVChooseCurrencyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REVChooseCurrencyViewController.h; sourceTree = "<group>"; };
 		55126CDD1F6D40F8004CBFD6 /* REVChooseCurrencyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REVChooseCurrencyViewController.m; sourceTree = "<group>"; };
 		5512B6531F63EAF200775DD0 /* REVDeltaCurrency.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVDeltaCurrency.h; sourceTree = "<group>"; };
@@ -64,8 +61,6 @@
 		5512B66B1F63F9CD00775DD0 /* REVGBPCurrency.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVGBPCurrency.m; sourceTree = "<group>"; };
 		553085C11F645AC1006D9389 /* NSDecimalNumber+Currency.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDecimalNumber+Currency.h"; sourceTree = "<group>"; };
 		553085C21F645AC1006D9389 /* NSDecimalNumber+Currency.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDecimalNumber+Currency.m"; sourceTree = "<group>"; };
-		557F60541F659ACE00B25317 /* REVCurrencyXMLParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVCurrencyXMLParser.h; sourceTree = "<group>"; };
-		557F60551F659ACE00B25317 /* REVCurrencyXMLParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVCurrencyXMLParser.m; sourceTree = "<group>"; };
 		5598B62A1F63E2810017C0E5 /* REVRequestMoney.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVRequestMoney.h; sourceTree = "<group>"; };
 		5598B62B1F63E2810017C0E5 /* REVRequestMoney.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVRequestMoney.m; sourceTree = "<group>"; };
 		55AFD3411F616FD900CFCE96 /* revolutCurrencyConverterDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = revolutCurrencyConverterDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,6 +87,11 @@
 		55F226241F6D4554004A0565 /* REVRate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVRate.m; sourceTree = "<group>"; };
 		55F226271F6D49DB004A0565 /* REVCurrencyRateXMLParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVCurrencyRateXMLParser.h; sourceTree = "<group>"; };
 		55F226281F6D49DB004A0565 /* REVCurrencyRateXMLParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVCurrencyRateXMLParser.m; sourceTree = "<group>"; };
+		55F2262A1F6D8EED004A0565 /* REVCurrencyRateTimerServive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVCurrencyRateTimerServive.h; sourceTree = "<group>"; };
+		55F2262B1F6D8EED004A0565 /* REVCurrencyRateTimerServive.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVCurrencyRateTimerServive.m; sourceTree = "<group>"; };
+		55F2262D1F6D8F2E004A0565 /* REVCurrencyRateServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVCurrencyRateServiceProtocol.h; sourceTree = "<group>"; };
+		55F2262E1F6DB1B3004A0565 /* REVRatesDownloader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVRatesDownloader.h; sourceTree = "<group>"; };
+		55F2262F1F6DB1B4004A0565 /* REVRatesDownloader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVRatesDownloader.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,17 +115,17 @@
 		550918811F658BE400B7EA07 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				5509188A1F658FDB00B7EA07 /* REVExchangeCurrencyAPIServiceProtocol.h */,
-				550918851F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.h */,
-				550918861F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.m */,
+				55F2262A1F6D8EED004A0565 /* REVCurrencyRateTimerServive.h */,
+				55F2262B1F6D8EED004A0565 /* REVCurrencyRateTimerServive.m */,
+				55F2262D1F6D8F2E004A0565 /* REVCurrencyRateServiceProtocol.h */,
 				55F226201F6D4427004A0565 /* REVCurrencyRateAPIService.h */,
 				55F226211F6D4427004A0565 /* REVCurrencyRateAPIService.m */,
 				55F226271F6D49DB004A0565 /* REVCurrencyRateXMLParser.h */,
 				55F226281F6D49DB004A0565 /* REVCurrencyRateXMLParser.m */,
+				55F2262E1F6DB1B3004A0565 /* REVRatesDownloader.h */,
+				55F2262F1F6DB1B4004A0565 /* REVRatesDownloader.m */,
 				55F226231F6D4554004A0565 /* REVRate.h */,
 				55F226241F6D4554004A0565 /* REVRate.m */,
-				557F60541F659ACE00B25317 /* REVCurrencyXMLParser.h */,
-				557F60551F659ACE00B25317 /* REVCurrencyXMLParser.m */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -334,10 +334,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55F2262C1F6D8EED004A0565 /* REVCurrencyRateTimerServive.m in Sources */,
 				55126CDE1F6D40F8004CBFD6 /* REVChooseCurrencyViewController.m in Sources */,
-				557F60561F659ACE00B25317 /* REVCurrencyXMLParser.m in Sources */,
+				55F226301F6DB1B4004A0565 /* REVRatesDownloader.m in Sources */,
 				5598B62C1F63E2810017C0E5 /* REVRequestMoney.m in Sources */,
-				550918871F658CE100B7EA07 /* REVExchangeEURCurrencyAPIService.m in Sources */,
 				5512B6601F63F37E00775DD0 /* REVGBPMoney.m in Sources */,
 				55E6F6F41F63C3D300062D17 /* REVWallet.m in Sources */,
 				553085C31F645AC1006D9389 /* NSDecimalNumber+Currency.m in Sources */,

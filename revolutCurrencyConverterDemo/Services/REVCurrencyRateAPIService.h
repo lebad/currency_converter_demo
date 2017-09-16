@@ -8,12 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class REVRate;
-
-typedef void(^REVCurrencyRateAPIServiceCompletion)(NSArray<REVRate *> *rates, NSError *error);
-
-@interface REVCurrencyRateAPIService : NSObject
-
-- (void)getRatesWithCompletion:(REVCurrencyRateAPIServiceCompletion)completion;
+@interface REVCurrencyRateAPIService : NSObject <REVCurrencyRateServiceProtocol>
 
 @end

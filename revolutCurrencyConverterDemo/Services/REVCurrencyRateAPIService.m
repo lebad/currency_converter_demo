@@ -9,10 +9,14 @@
 #import "REVCurrencyRateAPIService.h"
 #import "REVCurrencyRateXMLParser.h"
 
+static NSString * const URLString = @"http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
+
 @interface REVCurrencyRateAPIService ()
 
 @property (nonatomic, strong) REVCurrencyRateXMLParser *XMLParser;
+@property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
+@property (nonatomic, strong) NSURLRequest *request;
 
 @end
 
@@ -22,9 +26,29 @@
 {
 	self = [super init];
 	if (self) {
-		self.XMLParser = [REVCurrencyRateXMLParser new];
+		_XMLParser = [REVCurrencyRateXMLParser new];
 	}
 	return self;
+}
+
+- (NSURLSession *)session {
+	if (!_session) {
+		NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+		configuration.allowsCellularAccess = YES;
+		configuration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+		_session = [NSURLSession sessionWithConfiguration:configuration];
+	}
+	return _session;
+}
+
+- (NSURLRequest *)request {
+	if (!_request) {
+		NSURL *URL = [NSURL URLWithString:URLString];
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+		[request setHTTPMethod:@"GET"];
+		_request = [request copy];
+	}
+	return _request;
 }
 
 - (void)getRatesWithCompletion:(REVCurrencyRateAPIServiceCompletion)completion {
@@ -35,9 +59,8 @@
 	
 	[self.dataTask cancel];
 	
-	NSURL *URL = [NSURL URLWithString:@"http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"];
 	self.dataTask =
-	[[NSURLSession sharedSession] dataTaskWithURL:URL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+	[self.session dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 		if (error) {
 			completion(nil, error);
 		}
