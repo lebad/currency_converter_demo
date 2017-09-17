@@ -35,4 +35,15 @@
 	return roundUpHandler;
 }
 
+- (NSString *)stringForNumberWithCurrencyStyle
+{
+	NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+	numberFormatter.alwaysShowsDecimalSeparator = YES;
+	numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+	numberFormatter.maximumFractionDigits = 2;
+	numberFormatter.minimumFractionDigits = 2;
+	
+	return [numberFormatter stringFromNumber:self];
+}
+
 @end

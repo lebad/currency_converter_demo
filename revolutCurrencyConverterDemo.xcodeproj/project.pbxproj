@@ -32,6 +32,7 @@
 		55F226301F6DB1B4004A0565 /* REVRatesDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F2262F1F6DB1B4004A0565 /* REVRatesDownloader.m */; };
 		55F226331F6DCF16004A0565 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F226311F6DCF16004A0565 /* Reachability.m */; };
 		55F226361F6DD711004A0565 /* REVReachabilityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F226351F6DD711004A0565 /* REVReachabilityService.m */; };
+		55F226391F6EBEAE004A0565 /* REVConverterCoreService.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F226381F6EBEAE004A0565 /* REVConverterCoreService.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +99,8 @@
 		55F226321F6DCF16004A0565 /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		55F226341F6DD711004A0565 /* REVReachabilityService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVReachabilityService.h; sourceTree = "<group>"; };
 		55F226351F6DD711004A0565 /* REVReachabilityService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVReachabilityService.m; sourceTree = "<group>"; };
+		55F226371F6EBEAE004A0565 /* REVConverterCoreService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVConverterCoreService.h; sourceTree = "<group>"; };
+		55F226381F6EBEAE004A0565 /* REVConverterCoreService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVConverterCoreService.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +124,8 @@
 		550918811F658BE400B7EA07 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				55F226371F6EBEAE004A0565 /* REVConverterCoreService.h */,
+				55F226381F6EBEAE004A0565 /* REVConverterCoreService.m */,
 				55F226321F6DCF16004A0565 /* Reachability.h */,
 				55F226311F6DCF16004A0565 /* Reachability.m */,
 				55F226341F6DD711004A0565 /* REVReachabilityService.h */,
@@ -350,6 +355,7 @@
 				5598B62C1F63E2810017C0E5 /* REVRequestMoney.m in Sources */,
 				5512B6601F63F37E00775DD0 /* REVGBPMoney.m in Sources */,
 				55E6F6F41F63C3D300062D17 /* REVWallet.m in Sources */,
+				55F226391F6EBEAE004A0565 /* REVConverterCoreService.m in Sources */,
 				553085C31F645AC1006D9389 /* NSDecimalNumber+Currency.m in Sources */,
 				55F226291F6D49DB004A0565 /* REVCurrencyRateXMLParser.m in Sources */,
 				5512B6661F63F90000775DD0 /* REVUSDCurrency.m in Sources */,

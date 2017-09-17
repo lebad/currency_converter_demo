@@ -14,6 +14,7 @@
 {
 	self = [super init];
 	if (self) {
+		self.sign = @"£";
 		self.code = @"GBP";
 		self.name = @"British pound";
 	}

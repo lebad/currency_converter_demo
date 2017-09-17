@@ -27,5 +27,6 @@
 
 #import "REVChooseCurrencyViewController.h"
 #import "REVCurrencyRateServiceProtocol.h"
+#import "REVConverterCoreService.h"
 
 #endif /* Prefix_pch */

@@ -12,5 +12,6 @@
 
 - (NSDecimalNumber *)currencyDecimalNumberByRate:(NSDecimalNumber *)rate;
 - (NSDecimalNumber *)currencyDecimalNumberBySubtractingBy:(NSDecimalNumber *)number;
+- (NSString *)stringForNumberWithCurrencyStyle;
 
 @end

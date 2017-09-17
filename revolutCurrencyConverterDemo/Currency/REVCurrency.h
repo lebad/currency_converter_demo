@@ -10,6 +10,7 @@
 
 @interface REVCurrency : NSObject
 
+@property (nonatomic, copy) NSString *sign;
 @property (nonatomic, copy) NSString *code;
 @property (nonatomic, copy) NSString *name;
 
