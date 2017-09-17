@@ -36,7 +36,7 @@ static const NSTimeInterval TimerInterval = 30.0;
 		return;
 	}
 	self.completion = completion;
-	[self.queue cancelAllOperations];
+	[self cancel];
 	self.queue = [[NSOperationQueue alloc] init];
 	self.timer = [NSTimer scheduledTimerWithTimeInterval:TimerInterval
 											  target:self
@@ -46,8 +46,7 @@ static const NSTimeInterval TimerInterval = 30.0;
 	[self.timer fire];
 }
 
-- (void)repeat
-{
+- (void)repeat {
 	self.ratesDownloader = [[REVRatesDownloader alloc] init];
 	self.ratesDownloader.rateService = [[REVCurrencyRateAPIService alloc] init];
 	__weak REVRatesDownloader *weakRatesDownloader = self.ratesDownloader;
@@ -60,6 +59,10 @@ static const NSTimeInterval TimerInterval = 30.0;
 		}
 	};
 	[self.queue addOperation:self.ratesDownloader];
+}
+
+- (void)cancel {
+	[self.queue cancelAllOperations];
 }
 
 @end

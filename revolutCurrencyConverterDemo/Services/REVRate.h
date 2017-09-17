@@ -10,7 +10,7 @@
 
 @interface REVRate : NSObject
 
-@property (nonatomic, strong) REVCurrency *currency;
+@property (nonatomic, strong) REVDeltaCurrency *deltaCurrency;
 @property (nonatomic, strong) NSDecimalNumber *rate;
 
 @end

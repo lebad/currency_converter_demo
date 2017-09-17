@@ -12,5 +12,6 @@
 
 @property (nonatomic, strong) id<REVCurrencyRateServiceProtocol> rateService;
 + (instancetype)shared;
+- (void)cancel;
 
 @end

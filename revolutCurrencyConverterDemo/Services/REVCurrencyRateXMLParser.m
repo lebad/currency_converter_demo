@@ -61,8 +61,11 @@ didStartElement:(NSString *)elementName
 		if (currencyName && rateValue) {
 			if ([currencyName isEqualToString:@"USD"] || [currencyName isEqualToString:@"GBP"]) {
 				REVCurrency *currency = [REVCurrency currencyWithCode:currencyName];
+				REVDeltaCurrency *deltaCurrency = [REVDeltaCurrency new];
+				deltaCurrency.fromCurrency = [REVEURCurrency new];
+				deltaCurrency.toCurrency = currency;
 				REVRate *rate = [REVRate new];
-				rate.currency = currency;
+				rate.deltaCurrency = deltaCurrency;
 				rate.rate = [NSDecimalNumber decimalNumberWithString:rateValue];
 				[self.rateArray addObject:rate];
 			}

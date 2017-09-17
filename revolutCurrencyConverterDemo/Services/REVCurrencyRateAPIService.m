@@ -9,7 +9,7 @@
 #import "REVCurrencyRateAPIService.h"
 #import "REVCurrencyRateXMLParser.h"
 
-static NSString * const URLString = @"http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
+NSString * const REVRateURLString = @"http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
 
 @interface REVCurrencyRateAPIService ()
 
@@ -43,7 +43,7 @@ static NSString * const URLString = @"http://www.ecb.europa.eu/stats/eurofxref/e
 
 - (NSURLRequest *)request {
 	if (!_request) {
-		NSURL *URL = [NSURL URLWithString:URLString];
+		NSURL *URL = [NSURL URLWithString:REVRateURLString];
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
 		[request setHTTPMethod:@"GET"];
 		_request = [request copy];
