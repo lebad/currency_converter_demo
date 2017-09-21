@@ -21,6 +21,6 @@
 @protocol REVCarouselScrollViewDataSource <NSObject>
 
 - (UIView *)viewFromMoney:(REVMoney *)money atIndex:(NSInteger)i;
-- (void)didPageAtIndex:(NSUInteger)index;
+- (void)didPageAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView;
 
 @end

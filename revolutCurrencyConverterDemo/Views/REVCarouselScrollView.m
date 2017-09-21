@@ -79,7 +79,7 @@
 	CGFloat pageWidth = CGRectGetWidth(scrollView.frame);
 	int currentPageForControll = floor((scrollView.contentOffset.x-pageWidth/2)/pageWidth)+1;
 	NSUInteger currentPageMoney = currentPageForControll==3 ? 0 : currentPageForControll;
-	[self.dataSource didPageAtIndex:currentPageMoney];
+	[self.dataSource didPageAtIndex:currentPageMoney carouselView:self];
 }
 
 @end
