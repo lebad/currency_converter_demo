@@ -18,6 +18,8 @@ const CGFloat REVPageControlHeight = 50.0;
 @property (nonatomic, strong) UIPageControl *pageControll;
 @property (nonatomic, strong) UIButton *exchangeButton;
 
+@property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
+
 @end
 
 @implementation REVChooseCurrencyViewController
@@ -119,37 +121,54 @@ const CGFloat REVPageControlHeight = 50.0;
 
 #pragma mark - REVConverterCoreServiceDelegate
 
-- (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray
-{
-	CGFloat yOrigin = 0;
+- (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray {
+	self.moneyArray = moneyArray;
 	CGFloat scrollViewWidth = CGRectGetWidth(self.scrollView.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.scrollView.frame);
 	NSUInteger count = 0;
-	for (NSInteger i=0; i<moneyArray.count; i++) {
-		REVMoney *money = moneyArray[i];
-		CGRect containerFrame = CGRectMake(scrollViewWidth*i, yOrigin, scrollViewWidth, scrollViewHeight);
-		UIView *moneyContainer = [[UIView alloc] initWithFrame:containerFrame];
-		UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-		moneyLabel.text = [NSString stringWithFormat:@"%@ %@", money.currency.sign, [money.amount stringForNumberWithCurrencyStyle]];
-		moneyLabel.textColor = [UIColor blackColor];
-		moneyLabel.font = [UIFont systemFontOfSize:70.0];
-		moneyLabel.textAlignment = NSTextAlignmentCenter;
-		[moneyLabel sizeToFit];
-		moneyLabel.center = CGPointMake(containerFrame.size.width/2, (containerFrame.size.height/2)-100.0);
-		[moneyContainer addSubview:moneyLabel];
-		UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-		descriptionLabel.text = [NSString stringWithFormat:@"%@ - %@", money.currency.code, money.currency.name];
-		descriptionLabel.textColor = [UIColor blackColor];
-		descriptionLabel.font = [UIFont systemFontOfSize:20.0];
-		descriptionLabel.textAlignment = NSTextAlignmentCenter;
-		[descriptionLabel sizeToFit];
-		descriptionLabel.center = CGPointMake(containerFrame.size.width/2, moneyLabel.center.y+70.0);
-		[moneyContainer addSubview:descriptionLabel];
-		[self.scrollView addSubview:moneyContainer];
+	
+	REVMoney *lastMoney = self.moneyArray.lastObject;
+	UIView *lastMoneyView = [self viewFromMoney:lastMoney count:0];
+	[self.scrollView addSubview:lastMoneyView];
+	
+	for (NSInteger i=0; i<self.moneyArray.count; i++) {
+		REVMoney *money = self.moneyArray[i];
+		UIView *moneyView = [self viewFromMoney:money count:i+1];
+		[self.scrollView addSubview:moneyView];
 		count ++;
 	}
-	self.scrollView.contentSize = CGSizeMake(scrollViewWidth*count, scrollViewHeight);
+	REVMoney *firstMoney = self.moneyArray.firstObject;
+	UIView *firstMoneyView = [self viewFromMoney:firstMoney count:count+1];
+	[self.scrollView addSubview:firstMoneyView];
+	
+	
+	self.scrollView.contentSize = CGSizeMake(scrollViewWidth*(count+2), scrollViewHeight);
 	self.pageControll.numberOfPages = count;
+}
+
+- (UIView *)viewFromMoney:(REVMoney *)money count:(NSInteger)i {
+	CGFloat yOrigin = 0;
+	CGFloat scrollViewWidth = CGRectGetWidth(self.scrollView.frame);
+	CGFloat scrollViewHeight = CGRectGetHeight(self.scrollView.frame);
+	CGRect containerFrame = CGRectMake(scrollViewWidth*i, yOrigin, scrollViewWidth, scrollViewHeight);
+	UIView *moneyContainer = [[UIView alloc] initWithFrame:containerFrame];
+	UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+	moneyLabel.text = [NSString stringWithFormat:@"%@ %@", money.currency.sign, [money.amount stringForNumberWithCurrencyStyle]];
+	moneyLabel.textColor = [UIColor blackColor];
+	moneyLabel.font = [UIFont systemFontOfSize:70.0];
+	moneyLabel.textAlignment = NSTextAlignmentCenter;
+	[moneyLabel sizeToFit];
+	moneyLabel.center = CGPointMake(containerFrame.size.width/2, (containerFrame.size.height/2)-100.0);
+	[moneyContainer addSubview:moneyLabel];
+	UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+	descriptionLabel.text = [NSString stringWithFormat:@"%@ - %@", money.currency.code, money.currency.name];
+	descriptionLabel.textColor = [UIColor blackColor];
+	descriptionLabel.font = [UIFont systemFontOfSize:20.0];
+	descriptionLabel.textAlignment = NSTextAlignmentCenter;
+	[descriptionLabel sizeToFit];
+	descriptionLabel.center = CGPointMake(containerFrame.size.width/2, moneyLabel.center.y+70.0);
+	[moneyContainer addSubview:descriptionLabel];
+	return moneyContainer;
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -159,9 +178,20 @@ const CGFloat REVPageControlHeight = 50.0;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	CGFloat scrollViewWidth = CGRectGetWidth(self.scrollView.frame);
+	CGFloat scrollViewHeight = CGRectGetHeight(self.scrollView.frame);
+	
+	int currentPage = floor((self.scrollView.contentOffset.x - self.scrollView.frame.size.width / ([self.moneyArray count]+2)) / self.scrollView.frame.size.width) + 1;
+	if (currentPage==0) {
+		//go last but 1 page
+		[self.scrollView scrollRectToVisible:CGRectMake(scrollViewWidth * [self.moneyArray count],0,scrollViewWidth,scrollViewHeight) animated:NO];
+	} else if (currentPage==([self.moneyArray count]+1)) {
+		[self.scrollView scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
+	}
+	
 	CGFloat pageWidth = CGRectGetWidth(self.scrollView.frame);
-	CGFloat currentPage = floor((self.scrollView.contentOffset.x-pageWidth/2)/pageWidth)+1;
-	self.pageControll.currentPage = (NSInteger)currentPage;
+	int currentPageForControll = floor((self.scrollView.contentOffset.x-pageWidth/2)/pageWidth)+1;
+	self.pageControll.currentPage = currentPageForControll==3 ? 0 : currentPageForControll;
 }
 
 @end
