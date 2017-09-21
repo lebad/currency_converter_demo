@@ -14,6 +14,7 @@
 
 - (void)addDelegate:(id<REVConverterCoreServiceDelegate>)delegate;
 - (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate;
+- (void)didSelectMoney:(REVMoney *)money;
 - (void)start;
 
 @end

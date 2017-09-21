@@ -19,6 +19,7 @@ const CGFloat REVPageControlHeight = 50.0;
 @property (nonatomic, strong) UIButton *exchangeButton;
 
 @property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
+@property (nonatomic, assign) NSUInteger currentPageMoney;
 
 @end
 
@@ -116,7 +117,10 @@ const CGFloat REVPageControlHeight = 50.0;
 #pragma mark - Actions
 
 - (void)exchangeButtonAction:(UIButton *)sender {
+	[self.coreService didSelectMoney:self.moneyArray[self.currentPageMoney]];
 	
+	REVExchaneViewController *exchangeVC = [[REVExchaneViewController alloc] init];
+	[self.navigationController pushViewController:exchangeVC animated:YES];
 }
 
 #pragma mark - REVConverterCoreServiceDelegate
@@ -144,6 +148,8 @@ const CGFloat REVPageControlHeight = 50.0;
 	self.scrollView.contentSize = CGSizeMake(scrollViewWidth*(count+2), scrollViewHeight);
 	self.pageControll.numberOfPages = count;
 }
+
+#pragma mark - Views
 
 - (UIView *)viewFromMoney:(REVMoney *)money count:(NSInteger)i {
 	CGFloat yOrigin = 0;
@@ -190,7 +196,8 @@ const CGFloat REVPageControlHeight = 50.0;
 	
 	CGFloat pageWidth = CGRectGetWidth(self.scrollView.frame);
 	int currentPageForControll = floor((self.scrollView.contentOffset.x-pageWidth/2)/pageWidth)+1;
-	self.pageControll.currentPage = currentPageForControll==3 ? 0 : currentPageForControll;
+	self.currentPageMoney = currentPageForControll==3 ? 0 : currentPageForControll;
+	self.pageControll.currentPage = self.currentPageMoney;
 }
 
 @end

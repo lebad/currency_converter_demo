@@ -11,6 +11,7 @@
 @interface REVConverterCoreService ()
 
 @property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegate> > *delegates;
+@property (nonatomic, strong) REVMoney *selectedMoney;
 
 @end
 
@@ -31,6 +32,10 @@
 
 - (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate {
 	[self.delegates removeObject:delegate];
+}
+
+- (void)didSelectMoney:(REVMoney *)money {
+	self.selectedMoney = money;
 }
 
 - (void)start {
