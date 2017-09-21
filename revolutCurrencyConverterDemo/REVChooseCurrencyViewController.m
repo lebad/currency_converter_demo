@@ -7,14 +7,20 @@
 //
 
 #import "REVChooseCurrencyViewController.h"
+#import "REVCarouselScrollView.h"
 
 const CGFloat REVPageControlHeight = 50.0;
 
-@interface REVChooseCurrencyViewController () <REVConverterCoreServiceDelegate, UIScrollViewDelegate>
+@interface REVChooseCurrencyViewController ()
+<
+REVConverterCoreServiceDelegate,
+UIScrollViewDelegate,
+REVCarouselScrollViewDataSource
+>
 
 @property (nonatomic, strong) REVConverterCoreService *coreService;
 
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) REVCarouselScrollView *carouselView;
 @property (nonatomic, strong) UIPageControl *pageControll;
 @property (nonatomic, strong) UIButton *exchangeButton;
 
@@ -49,15 +55,11 @@ const CGFloat REVPageControlHeight = 50.0;
 }
 
 - (void)createScrollView {
-	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-	self.scrollView.delegate = self;
-	self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-	self.scrollView.pagingEnabled = YES;
-	self.scrollView.showsHorizontalScrollIndicator = NO;
-	self.scrollView.showsVerticalScrollIndicator = NO;
-	[self.view addSubview:self.scrollView];
+	self.carouselView = [[REVCarouselScrollView alloc] initWithFrame:CGRectZero];
+	self.carouselView.dataSource = self;
+	[self.view addSubview:self.carouselView];
 	
-	UIView *scrollView = self.scrollView;
+	UIView *scrollView = self.carouselView;
 	NSArray *horConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|"
 												  options:0
 												  metrics:nil
@@ -68,7 +70,7 @@ const CGFloat REVPageControlHeight = 50.0;
 													 views:NSDictionaryOfVariableBindings(scrollView)];
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:vertConstraints];
-	[self.scrollView layoutIfNeeded];
+	[self.carouselView layoutIfNeeded];
 }
 
 - (void)createPageControll {
@@ -119,7 +121,7 @@ const CGFloat REVPageControlHeight = 50.0;
 - (void)exchangeButtonAction:(UIButton *)sender {
 	[self.coreService didSelectMoney:self.moneyArray[self.currentPageMoney]];
 	
-	REVExchaneViewController *exchangeVC = [[REVExchaneViewController alloc] init];
+	REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
 	[self.navigationController pushViewController:exchangeVC animated:YES];
 }
 
@@ -127,34 +129,16 @@ const CGFloat REVPageControlHeight = 50.0;
 
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray {
 	self.moneyArray = moneyArray;
-	CGFloat scrollViewWidth = CGRectGetWidth(self.scrollView.frame);
-	CGFloat scrollViewHeight = CGRectGetHeight(self.scrollView.frame);
-	NSUInteger count = 0;
-	
-	REVMoney *lastMoney = self.moneyArray.lastObject;
-	UIView *lastMoneyView = [self viewFromMoney:lastMoney count:0];
-	[self.scrollView addSubview:lastMoneyView];
-	
-	for (NSInteger i=0; i<self.moneyArray.count; i++) {
-		REVMoney *money = self.moneyArray[i];
-		UIView *moneyView = [self viewFromMoney:money count:i+1];
-		[self.scrollView addSubview:moneyView];
-		count ++;
-	}
-	REVMoney *firstMoney = self.moneyArray.firstObject;
-	UIView *firstMoneyView = [self viewFromMoney:firstMoney count:count+1];
-	[self.scrollView addSubview:firstMoneyView];
-	
-	self.scrollView.contentSize = CGSizeMake(scrollViewWidth*(count+2), scrollViewHeight);
-	self.pageControll.numberOfPages = count;
+	[self.carouselView addMoneyArray:moneyArray];
+	self.pageControll.numberOfPages = self.moneyArray.count;
 }
 
-#pragma mark - Views
+#pragma mark - REVCarouselScrollViewDataSource
 
-- (UIView *)viewFromMoney:(REVMoney *)money count:(NSInteger)i {
+- (UIView *)viewFromMoney:(REVMoney *)money atIndex:(NSInteger)i {
 	CGFloat yOrigin = 0;
-	CGFloat scrollViewWidth = CGRectGetWidth(self.scrollView.frame);
-	CGFloat scrollViewHeight = CGRectGetHeight(self.scrollView.frame);
+	CGFloat scrollViewWidth = CGRectGetWidth(self.carouselView.frame);
+	CGFloat scrollViewHeight = CGRectGetHeight(self.carouselView.frame);
 	CGRect containerFrame = CGRectMake(scrollViewWidth*i, yOrigin, scrollViewWidth, scrollViewHeight);
 	UIView *moneyContainer = [[UIView alloc] initWithFrame:containerFrame];
 	UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -176,28 +160,8 @@ const CGFloat REVPageControlHeight = 50.0;
 	return moneyContainer;
 }
 
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[scrollView setContentOffset: CGPointMake(scrollView.contentOffset.x, 0)];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	CGFloat scrollViewWidth = CGRectGetWidth(self.scrollView.frame);
-	CGFloat scrollViewHeight = CGRectGetHeight(self.scrollView.frame);
-	
-	int currentPage = floor((self.scrollView.contentOffset.x - self.scrollView.frame.size.width / ([self.moneyArray count]+2)) / self.scrollView.frame.size.width) + 1;
-	if (currentPage==0) {
-		//go last but 1 page
-		[self.scrollView scrollRectToVisible:CGRectMake(scrollViewWidth * [self.moneyArray count],0,scrollViewWidth,scrollViewHeight) animated:NO];
-	} else if (currentPage==([self.moneyArray count]+1)) {
-		[self.scrollView scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
-	}
-	
-	CGFloat pageWidth = CGRectGetWidth(self.scrollView.frame);
-	int currentPageForControll = floor((self.scrollView.contentOffset.x-pageWidth/2)/pageWidth)+1;
-	self.currentPageMoney = currentPageForControll==3 ? 0 : currentPageForControll;
-	self.pageControll.currentPage = self.currentPageMoney;
+- (void)didPageAtIndex:(NSUInteger)index {
+	self.pageControll.currentPage = index;
 }
 
 @end

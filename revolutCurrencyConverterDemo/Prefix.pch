@@ -26,7 +26,7 @@
 #import "REVRate.h"
 
 #import "REVChooseCurrencyViewController.h"
-#import "REVExchaneViewController.h"
+#import "REVExchangeViewController.h"
 #import "REVCurrencyRateServiceProtocol.h"
 #import "REVConverterCoreService.h"
 

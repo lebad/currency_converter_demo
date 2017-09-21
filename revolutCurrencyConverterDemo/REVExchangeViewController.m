@@ -6,17 +6,18 @@
 //  Copyright © 2017 lebedac. All rights reserved.
 //
 
-#import "REVExchaneViewController.h"
+#import "REVExchangeViewController.h"
 
-@interface REVExchaneViewController ()
+@interface REVExchangeViewController ()
 
 @end
 
-@implementation REVExchaneViewController
+@implementation REVExchangeViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+	self.view.backgroundColor = [UIColor whiteColor];
+	
 }
 
 @end

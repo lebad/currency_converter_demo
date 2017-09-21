@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface REVExchaneViewController : UIViewController
+@interface REVExchangeViewController : UIViewController
 
 @end
