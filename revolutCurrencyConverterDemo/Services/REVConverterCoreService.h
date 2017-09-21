@@ -12,8 +12,8 @@
 
 @interface REVConverterCoreService : NSObject
 
-@property (nonatomic, weak) id<REVConverterCoreServiceDelegate> delegate;
-
+- (void)addDelegate:(id<REVConverterCoreServiceDelegate>)delegate;
+- (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate;
 - (void)start;
 
 @end

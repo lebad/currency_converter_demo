@@ -8,7 +8,30 @@
 
 #import "REVConverterCoreService.h"
 
+@interface REVConverterCoreService ()
+
+@property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegate> > *delegates;
+
+@end
+
 @implementation REVConverterCoreService
+
+- (instancetype)init
+{
+	self = [super init];
+	if (self) {
+		_delegates = [NSHashTable weakObjectsHashTable];
+	}
+	return self;
+}
+
+- (void)addDelegate:(id<REVConverterCoreServiceDelegate>)delegate {
+	[self.delegates addObject:delegate];
+}
+
+- (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate {
+	[self.delegates removeObject:delegate];
+}
 
 - (void)start {
 	NSDecimalNumber *amountMoney = [NSDecimalNumber decimalNumberWithString:@"100.00"];
@@ -17,7 +40,9 @@
 										[REVEURMoney moneyAmount:amountMoney],
 										[REVGBPMoney moneyAmount:amountMoney]
 										];
-	[self.delegate receiveMoneyArray:moneyArray];
+	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+		[delegate receiveMoneyArray:moneyArray];
+	}
 }
 
 @end

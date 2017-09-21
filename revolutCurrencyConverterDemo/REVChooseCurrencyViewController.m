@@ -33,7 +33,7 @@ const CGFloat REVPageControlHeight = 50.0;
 	[self createExchangeButton];
 	
 	self.coreService = [REVConverterCoreService new];
-	self.coreService.delegate = self;
+	[self.coreService addDelegate:self];
 	[self.coreService start];
 }
 
@@ -140,7 +140,6 @@ const CGFloat REVPageControlHeight = 50.0;
 	REVMoney *firstMoney = self.moneyArray.firstObject;
 	UIView *firstMoneyView = [self viewFromMoney:firstMoney count:count+1];
 	[self.scrollView addSubview:firstMoneyView];
-	
 	
 	self.scrollView.contentSize = CGSizeMake(scrollViewWidth*(count+2), scrollViewHeight);
 	self.pageControll.numberOfPages = count;
