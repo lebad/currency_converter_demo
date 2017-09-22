@@ -129,17 +129,24 @@ REVCarouselScrollViewDataSource
 
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray {
 	self.moneyArray = moneyArray;
-	[self.carouselView addMoneyArray:moneyArray];
 	self.pageControll.numberOfPages = self.moneyArray.count;
+	[self.carouselView reloadData];
 }
 
 #pragma mark - REVCarouselScrollViewDataSource
 
-- (UIView *)viewFromMoney:(REVMoney *)money atIndex:(NSInteger)i {
+- (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
+	return self.moneyArray.count;
+}
+
+- (UIView *)objectAtIndex:(NSUInteger)objectIndex
+			  viewAtIndex:(NSUInteger)viewIndex
+			 carouselView:(REVCarouselScrollView *)carouselView {
+	REVMoney *money = self.moneyArray[objectIndex];
 	CGFloat yOrigin = 0;
 	CGFloat scrollViewWidth = CGRectGetWidth(self.carouselView.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.carouselView.frame);
-	CGRect containerFrame = CGRectMake(scrollViewWidth*i, yOrigin, scrollViewWidth, scrollViewHeight);
+	CGRect containerFrame = CGRectMake(scrollViewWidth*viewIndex, yOrigin, scrollViewWidth, scrollViewHeight);
 	UIView *moneyContainer = [[UIView alloc] initWithFrame:containerFrame];
 	UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 	moneyLabel.text = [NSString stringWithFormat:@"%@ %@", money.currency.sign, [money.amount stringForNumberWithCurrencyStyle]];
@@ -160,7 +167,7 @@ REVCarouselScrollViewDataSource
 	return moneyContainer;
 }
 
-- (void)didPageAtIndex:(NSUInteger)index {
+- (void)didPageAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
 	self.pageControll.currentPage = index;
 }
 

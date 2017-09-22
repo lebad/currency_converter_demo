@@ -13,14 +13,14 @@
 @interface REVCarouselScrollView : UIScrollView
 
 @property (nonatomic, weak) id<REVCarouselScrollViewDataSource> dataSource;
-
-- (void)addMoneyArray:(NSArray<REVMoney *> *)moneyArray;
+- (void)reloadData;
 
 @end
 
 @protocol REVCarouselScrollViewDataSource <NSObject>
 
-- (UIView *)viewFromMoney:(REVMoney *)money atIndex:(NSInteger)i;
+- (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView;
+- (UIView *)objectAtIndex:(NSUInteger)objectIndex viewAtIndex:(NSUInteger)viewIndex carouselView:(REVCarouselScrollView *)carouselView;
 - (void)didPageAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView;
 
 @end

@@ -74,7 +74,13 @@ REVCarouselScrollViewDataSource
 
 #pragma mark - REVCarouselScrollViewDataSource
 
-- (UIView *)viewFromMoney:(REVMoney *)money atIndex:(NSInteger)i {
+- (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
+	return 1;
+}
+
+- (UIView *)objectAtIndex:(NSUInteger)objectIndex
+			  viewAtIndex:(NSUInteger)viewIndex
+			 carouselView:(REVCarouselScrollView *)carouselView {
 	CGFloat scrollViewWidth = CGRectGetWidth(self.topCarouselView.bounds);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.topCarouselView.bounds);
 	CGRect innerViewRect = CGRectMake(0, 0, scrollViewWidth, scrollViewHeight);

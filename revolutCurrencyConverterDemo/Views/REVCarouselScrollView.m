@@ -10,7 +10,7 @@
 
 @interface REVCarouselScrollView () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
+@property (nonatomic, assign) NSUInteger count;
 
 @end
 
@@ -20,34 +20,30 @@
 {
 	self = [super initWithFrame:frame];
 	if (self) {
-		_moneyArray = [NSArray array];
+		_count = 0;
 		[self setup];
 	}
 	return self;
 }
 
-- (void)addMoneyArray:(NSArray<REVMoney *> *)moneyArray {
-	self.moneyArray = moneyArray;
+- (void)reloadData
+{
+	self.count = [self.dataSource numberOfItemsForCarouselView:self];
 	
 	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.frame);
-	NSUInteger count = 0;
 	
-	REVMoney *lastMoney = self.moneyArray.lastObject;
-	UIView *lastMoneyView = [self.dataSource viewFromMoney:lastMoney atIndex:0];
+	UIView *lastMoneyView = [self.dataSource objectAtIndex:self.count-1 viewAtIndex:0 carouselView:self]; //0
 	[self addSubview:lastMoneyView];
 	
-	for (NSInteger i=0; i<self.moneyArray.count; i++) {
-		REVMoney *money = self.moneyArray[i];
-		UIView *moneyView = [self.dataSource viewFromMoney:money atIndex:i+1];
+	for (NSInteger i=0; i<self.count; i++) {
+		UIView *moneyView = [self.dataSource objectAtIndex:i viewAtIndex:i+1 carouselView:self]; //i+1
 		[self addSubview:moneyView];
-		count ++;
 	}
-	REVMoney *firstMoney = self.moneyArray.firstObject;
-	UIView *firstMoneyView = [self.dataSource viewFromMoney:firstMoney atIndex:count+1];
+	UIView *firstMoneyView = [self.dataSource objectAtIndex:0 viewAtIndex:self.count+1 carouselView:self];  //count+1
 	[self addSubview:firstMoneyView];
 	
-	self.contentSize = CGSizeMake(scrollViewWidth*(count+2), scrollViewHeight);
+	self.contentSize = CGSizeMake(scrollViewWidth*(self.count+2), scrollViewHeight);
 }
 
 - (void)setup {
@@ -68,11 +64,11 @@
 	CGFloat scrollViewWidth = CGRectGetWidth(scrollView.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(scrollView.frame);
 	
-	int currentPage = floor((scrollView.contentOffset.x - scrollView.frame.size.width / ([self.moneyArray count]+2)) / scrollView.frame.size.width) + 1;
+	int currentPage = floor((scrollView.contentOffset.x - scrollView.frame.size.width / (self.count+2)) / scrollView.frame.size.width) + 1;
 	if (currentPage==0) {
 		//go last but 1 page
-		[scrollView scrollRectToVisible:CGRectMake(scrollViewWidth * [self.moneyArray count],0,scrollViewWidth,scrollViewHeight) animated:NO];
-	} else if (currentPage==([self.moneyArray count]+1)) {
+		[scrollView scrollRectToVisible:CGRectMake(scrollViewWidth * self.count,0,scrollViewWidth,scrollViewHeight) animated:NO];
+	} else if (currentPage==(self.count+1)) {
 		[scrollView scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
 	}
 	
