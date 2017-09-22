@@ -21,5 +21,6 @@
 
 
 @protocol REVConverterCoreServiceDelegate <NSObject>
+@optional;
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray;
 @end

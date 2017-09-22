@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "REVConverterCoreService.h"
 
-@interface REVExchangeViewController : UIViewController
+@interface REVExchangeViewController : UIViewController <REVConverterCoreServiceDelegate>
+
+@property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
 
 @end

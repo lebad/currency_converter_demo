@@ -9,7 +9,7 @@
 #import "REVChooseCurrencyViewController.h"
 #import "REVCarouselScrollView.h"
 
-const CGFloat REVPageControlHeight = 50.0;
+static const CGFloat REVPageControlHeight = 50.0;
 
 @interface REVChooseCurrencyViewController ()
 <
@@ -122,6 +122,8 @@ REVCarouselScrollViewDataSource
 	[self.coreService didSelectMoney:self.moneyArray[self.currentPageMoney]];
 	
 	REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
+	exchangeVC.moneyArray = self.moneyArray;
+	[self.coreService addDelegate:exchangeVC];
 	[self.navigationController pushViewController:exchangeVC animated:YES];
 }
 

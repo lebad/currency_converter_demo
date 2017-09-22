@@ -33,17 +33,19 @@
 	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.frame);
 	
-	UIView *lastMoneyView = [self.dataSource objectAtIndex:self.count-1 viewAtIndex:0 carouselView:self]; //0
+	UIView *lastMoneyView = [self.dataSource objectAtIndex:self.count-1 viewAtIndex:0 carouselView:self];
 	[self addSubview:lastMoneyView];
 	
 	for (NSInteger i=0; i<self.count; i++) {
-		UIView *moneyView = [self.dataSource objectAtIndex:i viewAtIndex:i+1 carouselView:self]; //i+1
+		UIView *moneyView = [self.dataSource objectAtIndex:i viewAtIndex:i+1 carouselView:self];
 		[self addSubview:moneyView];
 	}
-	UIView *firstMoneyView = [self.dataSource objectAtIndex:0 viewAtIndex:self.count+1 carouselView:self];  //count+1
+	UIView *firstMoneyView = [self.dataSource objectAtIndex:0 viewAtIndex:self.count+1 carouselView:self];
 	[self addSubview:firstMoneyView];
 	
 	self.contentSize = CGSizeMake(scrollViewWidth*(self.count+2), scrollViewHeight);
+	
+	[self.dataSource didPageAtIndex:0 carouselView:self];
 }
 
 - (void)setup {
