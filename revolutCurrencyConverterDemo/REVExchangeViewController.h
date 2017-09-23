@@ -11,6 +11,7 @@
 
 @interface REVExchangeViewController : UIViewController <REVConverterCoreServiceDelegate>
 
+@property (nonatomic, strong) REVConverterCoreService *coreService;
 @property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
 @property (nonatomic, strong) REVMoney *selectedMoney;
 

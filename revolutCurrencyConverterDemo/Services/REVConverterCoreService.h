@@ -14,14 +14,15 @@
 
 - (void)addDelegate:(id<REVConverterCoreServiceDelegate>)delegate;
 - (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate;
-- (void)didSelectMoney:(REVMoney *)money;
+- (void)setDeltaCurrency:(REVDeltaCurrency *)deltaCurrency;
 - (void)start;
 
 @end
 
 
 @protocol REVConverterCoreServiceDelegate <NSObject>
-
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray;
 - (void)showAlertWithText:(NSString *)text;
+- (void)showDirectRateText:(NSString *)text;
+- (void)showInversRateText:(NSString *)text;
 @end

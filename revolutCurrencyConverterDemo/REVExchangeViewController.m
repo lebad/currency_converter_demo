@@ -31,6 +31,8 @@ REVCarouselScrollViewDataSource
 @property (nonatomic, copy) NSMutableArray<UILabel *> *textLabelArray;
 @property (nonatomic, copy) NSMutableArray<UILabel *> *rateLabelArray;
 
+@property (nonatomic, strong) REVDeltaCurrency *deltaCurrency;
+
 @end
 
 @implementation REVExchangeViewController
@@ -39,6 +41,7 @@ REVCarouselScrollViewDataSource
 {
 	self = [super init];
 	if (self) {
+		_deltaCurrency = [REVDeltaCurrency new];
 		_textFieldArray = [NSMutableArray new];
 		_textLabelArray = [NSMutableArray new];
 		_rateLabelArray = [NSMutableArray new];
@@ -54,6 +57,9 @@ REVCarouselScrollViewDataSource
 	[self createBottomCarouselView];
 	[self createTopPageControll];
 	[self createBottomPageControll];
+	
+	[self.topCarouselView reloadData];
+	[self.bottomCarouselView reloadData];
 }
 
 - (void)createTopCarouselView {
@@ -76,8 +82,6 @@ REVCarouselScrollViewDataSource
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:vertConstraints];
 	[self.topCarouselView layoutIfNeeded];
-	
-	[self.topCarouselView reloadData];
 }
 
 - (void)createBottomCarouselView {
@@ -100,8 +104,6 @@ REVCarouselScrollViewDataSource
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:vertConstraints];
 	[self.bottomCarouselView layoutIfNeeded];
-	
-	[self.bottomCarouselView reloadData];
 }
 
 - (void)createTopPageControll {
@@ -233,9 +235,17 @@ REVCarouselScrollViewDataSource
 - (void)didPageAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
 	if ([carouselView isEqual:self.topCarouselView]) {
 		self.topPageControll.currentPage = index;
+		
+		self.deltaCurrency.fromCurrency = self.moneyArray[index].currency;
 	}
 	if ([carouselView isEqual:self.bottomCarouselView]) {
 		self.bottomPageControll.currentPage = index;
+		
+		self.deltaCurrency.toCurrency = self.moneyArray[index].currency;
+	}
+	
+	if ([self.deltaCurrency isValid]) {
+		[self.coreService setDeltaCurrency:self.deltaCurrency];
 	}
 }
 
@@ -264,6 +274,14 @@ REVCarouselScrollViewDataSource
 }
 
 - (void)showAlertWithText:(NSString *)text {
+	
+}
+
+- (void)showDirectRateText:(NSString *)text {
+	self.navigationController.navigationBar.topItem.title = text;
+}
+
+- (void)showInversRateText:(NSString *)text {
 	
 }
 

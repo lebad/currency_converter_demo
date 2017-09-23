@@ -23,6 +23,18 @@
 }
 
 - (REVRate *)calculateRateForDelta:(REVDeltaCurrency *)delta {
+	REVRate *calculatedRate = [REVRate new];
+	calculatedRate.deltaCurrency = delta;
+	
+	for (REVRate *rate in self.rates) {
+		if ([rate.deltaCurrency.fromCurrency isEqualToCurrency:delta.fromCurrency]
+			&& [rate.deltaCurrency.toCurrency isEqualToCurrency:delta.toCurrency]) {
+			calculatedRate.rate = rate.rate;
+			return calculatedRate;
+		}
+	}
+	
+	
 	NSDecimalNumber *fromCurrencyRate = [NSDecimalNumber decimalNumberWithString:@""];
 	NSDecimalNumber *toCurrencyRate = [NSDecimalNumber decimalNumberWithString:@""];
 	for (REVRate *rate in self.rates) {
@@ -32,10 +44,14 @@
 		if ([rate.deltaCurrency.toCurrency isEqualToCurrency:delta.toCurrency]) {
 			toCurrencyRate = rate.rate;
 		}
+		
+		if ([rate.deltaCurrency.fromCurrency isEqualToCurrency:delta.toCurrency]
+			&& [rate.deltaCurrency.toCurrency isEqualToCurrency:delta.fromCurrency]) {
+			fromCurrencyRate = rate.rate;
+			toCurrencyRate = [NSDecimalNumber decimalNumberWithString:@"1"];
+		}
 	}
 	NSDecimalNumber *calculatedRateDecimalNumber = [toCurrencyRate currencyDecimalNumberByDividingBy:fromCurrencyRate];
-	REVRate *calculatedRate = [REVRate new];
-	calculatedRate.deltaCurrency = delta;
 	calculatedRate.rate = calculatedRateDecimalNumber;
 	return calculatedRate;
 }

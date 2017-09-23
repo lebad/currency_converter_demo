@@ -42,13 +42,22 @@
 	return roundUpHandler;
 }
 
-- (NSString *)stringForNumberWithCurrencyStyle
-{
+- (NSString *)stringForNumberWithCurrencyStyle {
 	NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
 	numberFormatter.alwaysShowsDecimalSeparator = YES;
 	numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
 	numberFormatter.maximumFractionDigits = 2;
 	numberFormatter.minimumFractionDigits = 2;
+	
+	return [numberFormatter stringFromNumber:self];
+}
+
+- (NSString *)stringForNumberWithRateStyle {
+	NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+	numberFormatter.alwaysShowsDecimalSeparator = YES;
+	numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+	numberFormatter.maximumFractionDigits = 4;
+	numberFormatter.minimumFractionDigits = 4;
 	
 	return [numberFormatter stringFromNumber:self];
 }

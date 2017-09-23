@@ -17,7 +17,7 @@
 @property (nonatomic, strong) REVReachabilityService *reachabilityService;
 
 @property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegate> > *delegates;
-@property (nonatomic, strong) REVMoney *selectedMoney;
+@property (nonatomic, strong) REVDeltaCurrency *directDeltaCurrency;
 @property (nonatomic, strong) REVRateConverter *rateConverter;
 
 @end
@@ -42,8 +42,10 @@
 	[self.delegates removeObject:delegate];
 }
 
-- (void)didSelectMoney:(REVMoney *)money {
-	self.selectedMoney = money;
+- (void)setDeltaCurrency:(REVDeltaCurrency *)deltaCurrency {
+	self.directDeltaCurrency = deltaCurrency;
+	
+	[self calculateRateAndShow];
 }
 
 - (void)start {
@@ -68,8 +70,27 @@
 			[self showAlertWithText:@"The error occured while receiving data"];
 		} else {
 			self.rateConverter = [[REVRateConverter alloc] initWithRates:rates];
+			[self calculateRateAndShow];
 		}
 	}];
+}
+
+- (void)calculateRateAndShow {
+	if (!self.rateConverter || !self.directDeltaCurrency) {
+		return;
+	}
+	
+	REVRate *directRate = [self.rateConverter calculateRateForDelta:self.directDeltaCurrency];
+	NSString *directRectString = [directRate.rate stringForNumberWithRateStyle];
+	REVRate *inverseRate = [self.rateConverter calculateRateForDelta:[self.directDeltaCurrency inverseDelta]];
+	NSString *inverseString = [inverseRate.rate stringForNumberWithRateStyle];
+	
+	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+		[delegate showDirectRateText:directRectString];
+		[delegate showInversRateText:inverseString];
+	}
+	
+	NSLog(@"Show Rate!");
 }
 
 - (void)showNotReachableAlert {

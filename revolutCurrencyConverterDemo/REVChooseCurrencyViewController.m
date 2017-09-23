@@ -119,9 +119,9 @@ REVCarouselScrollViewDataSource
 #pragma mark - Actions
 
 - (void)exchangeButtonAction:(UIButton *)sender {
-	[self.coreService didSelectMoney:self.moneyArray[self.currentPageMoney]];
 	
 	REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
+	exchangeVC.coreService = self.coreService;
 	exchangeVC.moneyArray = self.moneyArray;
 	exchangeVC.selectedMoney = self.moneyArray[self.pageControll.currentPage];
 	[self.coreService addDelegate:exchangeVC];
@@ -137,6 +137,14 @@ REVCarouselScrollViewDataSource
 }
 
 - (void)showAlertWithText:(NSString *)text {
+	
+}
+
+- (void)showDirectRateText:(NSString *)text {
+	
+}
+
+- (void)showInversRateText:(NSString *)text {
 	
 }
 

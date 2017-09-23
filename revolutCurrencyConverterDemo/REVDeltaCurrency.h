@@ -13,4 +13,7 @@
 @property (nonatomic, strong) REVCurrency *fromCurrency;
 @property (nonatomic, strong) REVCurrency *toCurrency;
 
+- (REVDeltaCurrency *)inverseDelta;
+- (BOOL)isValid;
+
 @end
