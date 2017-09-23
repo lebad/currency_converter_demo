@@ -17,6 +17,13 @@
 	return moneyAmount;
 }
 
+- (NSDecimalNumber *)currencyDecimalNumberByDividingBy:(NSDecimalNumber *)number {
+	NSDecimalNumberHandler *roundUpHandler = [self roundHandler];
+	NSDecimalNumber *moneyAmount = [self decimalNumberByDividingBy:number
+													  withBehavior:roundUpHandler];
+	return moneyAmount;
+}
+
 - (NSDecimalNumber *)currencyDecimalNumberByRate:(NSDecimalNumber *)rate {
 	NSDecimalNumberHandler *roundUpHandler = [self roundHandler];
 	NSDecimalNumber *moneyAmount = [self decimalNumberByMultiplyingBy:rate

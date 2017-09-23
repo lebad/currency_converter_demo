@@ -23,4 +23,5 @@
 @protocol REVConverterCoreServiceDelegate <NSObject>
 @optional;
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray;
+- (void)showAlertWithText:(NSString *)text;
 @end

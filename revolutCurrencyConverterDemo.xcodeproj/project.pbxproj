@@ -17,6 +17,7 @@
 		5512B66C1F63F9CE00775DD0 /* REVGBPCurrency.m in Sources */ = {isa = PBXBuildFile; fileRef = 5512B66B1F63F9CD00775DD0 /* REVGBPCurrency.m */; };
 		5529868F1F74464200537091 /* REVCarouselScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5529868E1F74464200537091 /* REVCarouselScrollView.m */; };
 		553085C31F645AC1006D9389 /* NSDecimalNumber+Currency.m in Sources */ = {isa = PBXBuildFile; fileRef = 553085C21F645AC1006D9389 /* NSDecimalNumber+Currency.m */; };
+		5597E5BB1F7678E000125615 /* REVRateConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5597E5BA1F7678E000125615 /* REVRateConverter.m */; };
 		5598B62C1F63E2810017C0E5 /* REVRequestMoney.m in Sources */ = {isa = PBXBuildFile; fileRef = 5598B62B1F63E2810017C0E5 /* REVRequestMoney.m */; };
 		55AFD3461F616FD900CFCE96 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFD3451F616FD900CFCE96 /* main.m */; };
 		55AFD3491F616FD900CFCE96 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFD3481F616FD900CFCE96 /* AppDelegate.m */; };
@@ -68,6 +69,8 @@
 		5529868E1F74464200537091 /* REVCarouselScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVCarouselScrollView.m; sourceTree = "<group>"; };
 		553085C11F645AC1006D9389 /* NSDecimalNumber+Currency.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDecimalNumber+Currency.h"; sourceTree = "<group>"; };
 		553085C21F645AC1006D9389 /* NSDecimalNumber+Currency.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDecimalNumber+Currency.m"; sourceTree = "<group>"; };
+		5597E5B91F7678E000125615 /* REVRateConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVRateConverter.h; sourceTree = "<group>"; };
+		5597E5BA1F7678E000125615 /* REVRateConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVRateConverter.m; sourceTree = "<group>"; };
 		5598B62A1F63E2810017C0E5 /* REVRequestMoney.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = REVRequestMoney.h; sourceTree = "<group>"; };
 		5598B62B1F63E2810017C0E5 /* REVRequestMoney.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = REVRequestMoney.m; sourceTree = "<group>"; };
 		55AFD3411F616FD900CFCE96 /* revolutCurrencyConverterDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = revolutCurrencyConverterDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +135,8 @@
 			children = (
 				55F226371F6EBEAE004A0565 /* REVConverterCoreService.h */,
 				55F226381F6EBEAE004A0565 /* REVConverterCoreService.m */,
+				5597E5B91F7678E000125615 /* REVRateConverter.h */,
+				5597E5BA1F7678E000125615 /* REVRateConverter.m */,
 				55F226321F6DCF16004A0565 /* Reachability.h */,
 				55F226311F6DCF16004A0565 /* Reachability.m */,
 				55F226341F6DD711004A0565 /* REVReachabilityService.h */,
@@ -373,6 +378,7 @@
 				55F226301F6DB1B4004A0565 /* REVRatesDownloader.m in Sources */,
 				5598B62C1F63E2810017C0E5 /* REVRequestMoney.m in Sources */,
 				5512B6601F63F37E00775DD0 /* REVGBPMoney.m in Sources */,
+				5597E5BB1F7678E000125615 /* REVRateConverter.m in Sources */,
 				55F2263C1F6ED10B004A0565 /* REVExchangeViewController.m in Sources */,
 				55E6F6F41F63C3D300062D17 /* REVWallet.m in Sources */,
 				55F226391F6EBEAE004A0565 /* REVConverterCoreService.m in Sources */,

@@ -40,6 +40,7 @@ REVCarouselScrollViewDataSource
 	if (self) {
 		_textFieldArray = [NSMutableArray new];
 		_textLabelArray = [NSMutableArray new];
+		_rateLabelArray = [NSMutableArray new];
 	}
 	return self;
 }
@@ -155,6 +156,7 @@ REVCarouselScrollViewDataSource
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:verConstraints];
 	self.bottomPageControll.numberOfPages = self.moneyArray.count;
+	self.bottomPageControll.currentPage = 1;
 }
 
 #pragma mark - REVConverterCoreServiceDelegate
@@ -243,12 +245,14 @@ REVCarouselScrollViewDataSource
 	if ([carouselView isEqual:self.topCarouselView]) {
 		self.topPageControll.currentPage = index;
 	}
-	self.bottomPageControll.currentPage = (index == self.moneyArray.count-1 ? 0: index+1);
-	
-	if (index == 0) {
+	if ([carouselView isEqual:self.bottomCarouselView]) {
+		NSInteger currentPage = (index == self.moneyArray.count-1 ? 0: index+1);
+		self.bottomPageControll.currentPage = currentPage;
+	}
+//	if (index == 0) {
 		UITextField *firstTextField = self.textFieldArray[index];
 		[firstTextField becomeFirstResponder];
-	}
+//	}
 }
 
 @end
