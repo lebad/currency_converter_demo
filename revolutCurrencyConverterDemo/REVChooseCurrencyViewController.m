@@ -148,6 +148,10 @@ REVCarouselScrollViewDataSource
 	
 }
 
+- (void)showCalculatedMoneyText:(NSString *)text {
+	
+}
+
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {

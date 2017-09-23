@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface REVRateConverter : NSObject
+@interface REVRateConverter : NSObject <REVRateServiceProtocol>
 
 - (instancetype)initWithRates:(NSArray<REVRate *> *)rates;
 - (REVRate *)calculateRateForDelta:(REVDeltaCurrency *)delta;

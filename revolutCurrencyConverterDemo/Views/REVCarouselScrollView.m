@@ -96,7 +96,6 @@
 	}
 	
 	int currentPage = floor((self.contentOffset.x - self.frame.size.width / (self.count+2)) / self.frame.size.width);
-	[self.dataSource didPageAtIndex:currentPage carouselView:self];
 	
 	if ([self isFirstElement]) {
 		[self.dataSource didViewAtIndex:0 carouselView:self];
@@ -105,6 +104,8 @@
 	} else {
 		[self.dataSource didViewAtIndex:currentPage+1 carouselView:self];
 	}
+	
+	[self.dataSource didPageAtIndex:currentPage carouselView:self];
 }
 
 - (BOOL)isLastElement {

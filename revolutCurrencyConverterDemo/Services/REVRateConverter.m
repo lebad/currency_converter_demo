@@ -26,6 +26,11 @@
 	REVRate *calculatedRate = [REVRate new];
 	calculatedRate.deltaCurrency = delta;
 	
+	if ([delta.fromCurrency isEqualToCurrency:delta.toCurrency]) {
+		calculatedRate.rate = [NSDecimalNumber decimalNumberWithString:@"1"];
+		return calculatedRate;
+	}
+	
 	for (REVRate *rate in self.rates) {
 		if ([rate.deltaCurrency.fromCurrency isEqualToCurrency:delta.fromCurrency]
 			&& [rate.deltaCurrency.toCurrency isEqualToCurrency:delta.toCurrency]) {
@@ -33,7 +38,6 @@
 			return calculatedRate;
 		}
 	}
-	
 	
 	NSDecimalNumber *fromCurrencyRate = [NSDecimalNumber decimalNumberWithString:@""];
 	NSDecimalNumber *toCurrencyRate = [NSDecimalNumber decimalNumberWithString:@""];
@@ -54,6 +58,13 @@
 	NSDecimalNumber *calculatedRateDecimalNumber = [toCurrencyRate currencyDecimalNumberByDividingBy:fromCurrencyRate];
 	calculatedRate.rate = calculatedRateDecimalNumber;
 	return calculatedRate;
+}
+
+#pragma mark - REVRateServiceProtocol
+
+- (NSDecimalNumber *)currencyRateForDelta:(REVDeltaCurrency *)delta {
+	REVRate *rate = [self calculateRateForDelta:delta];
+	return rate.rate;
 }
 
 @end

@@ -19,7 +19,8 @@ static const CGFloat REVKeyBoardHeight = 216.0;
 
 @interface REVExchangeViewController ()
 <
-REVCarouselScrollViewDataSource
+REVCarouselScrollViewDataSource,
+UITextFieldDelegate
 >
 
 @property (nonatomic, strong) REVCarouselScrollView *topCarouselView;
@@ -30,6 +31,9 @@ REVCarouselScrollViewDataSource
 @property (nonatomic, copy) NSMutableArray<UITextField *> *textFieldArray;
 @property (nonatomic, copy) NSMutableArray<UILabel *> *textLabelArray;
 @property (nonatomic, copy) NSMutableArray<UILabel *> *rateLabelArray;
+@property (nonatomic, weak) UITextField *currentTextField;
+@property (nonatomic, weak) UILabel *currentTextLabel;
+@property (nonatomic, weak) UILabel *currentRateLabel;
 
 @property (nonatomic, strong) REVDeltaCurrency *deltaCurrency;
 
@@ -197,22 +201,22 @@ REVCarouselScrollViewDataSource
 	if ([carouselView isEqual:self.topCarouselView]) {
 		CGFloat textFieldWidth = scrollViewWidth - CGRectGetMaxX(currencyLabel.frame) - REVTextFieldLeft;
 		CGRect textFieldRect =
-		CGRectMake(CGRectGetMaxX(currencyLabel.frame), 0, textFieldWidth, CGRectGetHeight(currencyLabel.frame));
+		CGRectMake(CGRectGetMaxX(currencyLabel.frame), CGRectGetMinY(currencyLabel.frame),
+				   textFieldWidth, CGRectGetHeight(currencyLabel.frame));
 		UITextField *textField = [[UITextField alloc] initWithFrame:textFieldRect];
 		textField.textAlignment = NSTextAlignmentRight;
 		textField.font = [UIFont systemFontOfSize:40.0];
 		textField.keyboardType = UIKeyboardTypeDecimalPad;
-		textField.center = CGPointMake(CGRectGetMidX(textFieldRect), scrollViewHeight/2);
+		textField.delegate = self;
 		[moneyContainer addSubview:textField];
 		[self.textFieldArray addObject:textField];
 	} else {
 		CGFloat textLabelWidth = scrollViewWidth - CGRectGetMaxX(currencyLabel.frame) - REVTextFieldLeft;
 		CGRect textLabelRect =
-		CGRectMake(CGRectGetMaxX(currencyLabel.frame), 0, textLabelWidth, CGRectGetHeight(currencyLabel.frame));
+		CGRectMake(CGRectGetMaxX(currencyLabel.frame), CGRectGetMinY(currencyLabel.frame), textLabelWidth, CGRectGetHeight(currencyLabel.frame));
 		UILabel *textLabel = [[UILabel alloc] initWithFrame:textLabelRect];
 		textLabel.textAlignment = NSTextAlignmentRight;
 		textLabel.font = [UIFont systemFontOfSize:40.0];
-		textLabel.center = CGPointMake(CGRectGetMidX(textLabelRect), scrollViewHeight/2);
 		[moneyContainer addSubview:textLabel];
 		[self.textLabelArray addObject:textLabel];
 		
@@ -245,14 +249,26 @@ REVCarouselScrollViewDataSource
 	}
 	
 	if ([self.deltaCurrency isValid]) {
-		[self.coreService setDeltaCurrency:self.deltaCurrency];
+		[self.coreService calculateDeltaCurrency:self.deltaCurrency];
 	}
 }
 
 - (void)didViewAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
 	if ([carouselView isEqual:self.topCarouselView]) {
-		UITextField *firstTextField = self.textFieldArray[index];
-		[firstTextField becomeFirstResponder];
+		self.currentTextField = self.textFieldArray[index];
+		[self.currentTextField becomeFirstResponder];
+	}
+	if ([carouselView isEqual:self.bottomCarouselView]) {
+		self.currentTextLabel = self.textLabelArray[index];
+		self.currentRateLabel = self.rateLabelArray[index];
+	}
+	
+	[self.coreService resignCalculatedMoney];
+	for (UITextField *textField in self.textFieldArray) {
+		textField.text = nil;
+	}
+	for (UILabel *label in self.textLabelArray) {
+		label.text = nil;
 	}
 }
 
@@ -278,11 +294,33 @@ REVCarouselScrollViewDataSource
 }
 
 - (void)showDirectRateText:(NSString *)text {
-	self.navigationController.navigationBar.topItem.title = text;
+	self.navigationItem.title = text;
 }
 
 - (void)showInversRateText:(NSString *)text {
+	self.currentRateLabel.textAlignment = NSTextAlignmentRight;
+	self.currentRateLabel.text = text;
+}
+
+- (void)showCalculatedMoneyText:(NSString *)text {
+	self.currentTextLabel.text = text;
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	NSString *newString = @"";
+	newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+	newString = [newString stringByReplacingOccurrencesOfString:@"-" withString:@""];
 	
+	REVMoney *currentWalletMoney = self.moneyArray[self.topPageControll.currentPage];
+	REVMoney *convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:newString];
+	[self.coreService calculateConvertedMoney:convertedMoney];
+	
+	newString = [@"-" stringByAppendingString:newString];
+	textField.text = newString;
+	
+	return NO;
 }
 
 @end

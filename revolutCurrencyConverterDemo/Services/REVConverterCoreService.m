@@ -15,9 +15,11 @@
 
 @property (nonatomic, strong) REVWallet *wallet;
 @property (nonatomic, strong) REVReachabilityService *reachabilityService;
+@property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
 
 @property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegate> > *delegates;
 @property (nonatomic, strong) REVDeltaCurrency *directDeltaCurrency;
+@property (nonatomic, strong) REVMoney *convertedMoney;
 @property (nonatomic, strong) REVRateConverter *rateConverter;
 
 @end
@@ -42,16 +44,39 @@
 	[self.delegates removeObject:delegate];
 }
 
-- (void)setDeltaCurrency:(REVDeltaCurrency *)deltaCurrency {
+- (void)calculateDeltaCurrency:(REVDeltaCurrency *)deltaCurrency {
 	self.directDeltaCurrency = deltaCurrency;
 	
 	[self calculateRateAndShow];
+}
+
+- (void)calculateConvertedMoney:(REVMoney *)money {
+	self.convertedMoney = money;
+	
+	[self calculateWalletAndShow];
+}
+
+- (void)resignCalculatedMoney {
+	self.convertedMoney = nil;
 }
 
 - (void)start {
 	[self receiveMoney];
 	
 	[self checkReachabilityAndDoSomething];
+}
+
+- (void)receiveMoney {
+	NSDecimalNumber *amountMoney = [NSDecimalNumber decimalNumberWithString:@"100.00"];
+	NSArray<REVMoney *> *moneyArray = @[
+										[REVUSDMoney moneyAmount:amountMoney],
+										[REVEURMoney moneyAmount:amountMoney],
+										[REVGBPMoney moneyAmount:amountMoney]
+										];
+	self.moneyArray = moneyArray;
+	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+		[delegate receiveMoneyArray:self.moneyArray];
+	}
 }
 
 - (void)checkReachabilityAndDoSomething {
@@ -71,8 +96,29 @@
 		} else {
 			self.rateConverter = [[REVRateConverter alloc] initWithRates:rates];
 			[self calculateRateAndShow];
+			self.wallet = [[REVWallet alloc] initWithMoneyArray:self.moneyArray
+											currencyRateService:self.rateConverter];
+			[self calculateWalletAndShow];
 		}
 	}];
+}
+
+- (void)calculateWalletAndShow {
+	if (!self.wallet || !self.rateConverter || !self.directDeltaCurrency || !self.convertedMoney) {
+		return;
+	}
+	if (!self.convertedMoney) {
+		for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+			[delegate showCalculatedMoneyText:@""];
+		}
+	}
+	
+	REVRequestMoney *request = [REVRequestMoney requestWith:self.convertedMoney targetCurrency:self.directDeltaCurrency.toCurrency];
+	REVMoney *money = [self.wallet calculateRequest:request];
+	NSString *moneyText = [NSString stringWithFormat:@"+%@", [money.amount stringForNumberWithCurrencyStyle]];
+	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+		[delegate showCalculatedMoneyText:moneyText];
+	}
 }
 
 - (void)calculateRateAndShow {
@@ -82,12 +128,21 @@
 	
 	REVRate *directRate = [self.rateConverter calculateRateForDelta:self.directDeltaCurrency];
 	NSString *directRectString = [directRate.rate stringForNumberWithRateStyle];
-	REVRate *inverseRate = [self.rateConverter calculateRateForDelta:[self.directDeltaCurrency inverseDelta]];
+	NSString *directRectStringToShow = [NSString stringWithFormat:@"%@1=%@%@",
+									   self.directDeltaCurrency.fromCurrency.sign,
+									   self.directDeltaCurrency.toCurrency.sign,
+									   directRectString];
+	REVDeltaCurrency *inverseCurrency = [self.directDeltaCurrency inverseDelta];
+	REVRate *inverseRate = [self.rateConverter calculateRateForDelta:inverseCurrency];
 	NSString *inverseString = [inverseRate.rate stringForNumberWithRateStyle];
+	NSString *inverseRectStringToShow = [NSString stringWithFormat:@"%@1=%@%@",
+										self.directDeltaCurrency.toCurrency.sign,
+										 self.directDeltaCurrency.fromCurrency.sign,
+										inverseString];
 	
 	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
-		[delegate showDirectRateText:directRectString];
-		[delegate showInversRateText:inverseString];
+		[delegate showDirectRateText:directRectStringToShow];
+		[delegate showInversRateText:inverseRectStringToShow];
 	}
 	
 	NSLog(@"Show Rate!");
@@ -104,20 +159,6 @@
 - (void)showAlertWithText:(NSString *)text {
 	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
 		[delegate showAlertWithText:text];
-	}
-}
-
-- (void)receiveMoney {
-	NSDecimalNumber *amountMoney = [NSDecimalNumber decimalNumberWithString:@"100.00"];
-	NSArray<REVMoney *> *moneyArray = @[
-										[REVUSDMoney moneyAmount:amountMoney],
-										[REVEURMoney moneyAmount:amountMoney],
-										[REVGBPMoney moneyAmount:amountMoney]
-										];
-	self.wallet = [[REVWallet alloc] initWithMoneyArray:moneyArray
-									currencyRateService:nil];
-	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
-		[delegate receiveMoneyArray:moneyArray];
 	}
 }
 
