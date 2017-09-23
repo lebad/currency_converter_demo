@@ -33,21 +33,30 @@
 	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.frame);
 	
-	UIView *lastMoneyView = [self.dataSource objectAtIndex:self.count-1 viewAtIndex:0 carouselView:self];
+	CGFloat yOrigin = 0;
+	CGRect containerFrame = CGRectMake(0, yOrigin, scrollViewWidth, scrollViewHeight);
+	
+	UIView *lastMoneyView = [self.dataSource objectAtIndex:self.count-1 carouselView:self];
+	lastMoneyView.frame = containerFrame;
 	[self addSubview:lastMoneyView];
 	
 	for (NSInteger i=0; i<self.count; i++) {
-		UIView *moneyView = [self.dataSource objectAtIndex:i viewAtIndex:i+1 carouselView:self];
+		UIView *moneyView = [self.dataSource objectAtIndex:i carouselView:self];
+		containerFrame = CGRectMake(scrollViewWidth*(i+1), yOrigin, scrollViewWidth, scrollViewHeight);
+		moneyView.frame = containerFrame;
 		[self addSubview:moneyView];
 	}
-	UIView *firstMoneyView = [self.dataSource objectAtIndex:0 viewAtIndex:self.count+1 carouselView:self];
+	UIView *firstMoneyView = [self.dataSource objectAtIndex:0 carouselView:self];
+	containerFrame = CGRectMake(scrollViewWidth*(self.count+1), yOrigin, scrollViewWidth, scrollViewHeight);
+	firstMoneyView.frame = containerFrame;
 	[self addSubview:firstMoneyView];
 	
 	self.contentSize = CGSizeMake(scrollViewWidth*(self.count+2), scrollViewHeight);
 	
 	//default scroll to the second
 	[self scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
-	[self.dataSource didPageAtIndex:0 carouselView:self];
+	[self.dataSource dataIsLoadedForCarouselView:self];
+	[self scrollViewDidEndDecelerating:self];
 }
 
 - (void)setup {
@@ -56,6 +65,15 @@
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;
 	self.delegate = self;
+}
+
+- (void)scrollToPage:(NSUInteger)page {
+	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
+	CGFloat scrollViewHeight = CGRectGetHeight(self.frame);
+	
+	CGFloat xOrigin = scrollViewWidth*(page+1);
+	
+	[self scrollRectToVisible:CGRectMake(xOrigin,0,scrollViewWidth,scrollViewHeight) animated:NO];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -68,13 +86,11 @@
 	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.frame);
 	
-	//when last element
-	if (self.contentOffset.x == scrollViewWidth*(self.count+1)) {
+	if ([self isLastElement]) {
 		//scroll to the second
 		[self scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
 	}
-	//when first element
-	if (self.contentOffset.x == 0) {
+	if ([self isFirstElement]) {
 		//scroll to the last but one
 		[self scrollRectToVisible:CGRectMake(scrollViewWidth * self.count,0,scrollViewWidth,scrollViewHeight) animated:NO];
 	}
@@ -82,6 +98,22 @@
 	int currentPage = floor((self.contentOffset.x - self.frame.size.width / (self.count+2)) / self.frame.size.width);
 	[self.dataSource didPageAtIndex:currentPage carouselView:self];
 	
+	if ([self isFirstElement]) {
+		[self.dataSource didViewAtIndex:0 carouselView:self];
+	} else if ([self isLastElement]) {
+		[self.dataSource didViewAtIndex:self.count+1 carouselView:self];
+	} else {
+		[self.dataSource didViewAtIndex:currentPage+1 carouselView:self];
+	}
+}
+
+- (BOOL)isLastElement {
+	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
+	return self.contentOffset.x == scrollViewWidth*(self.count+1);
+}
+
+- (BOOL)isFirstElement {
+	return self.contentOffset.x == 0;
 }
 
 @end

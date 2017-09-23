@@ -9,6 +9,7 @@
 #import "REVExchangeViewController.h"
 #import "REVCarouselScrollView.h"
 
+static const CGFloat REVCurrencyLabelTop = 90.0;
 static const CGFloat REVCurrencyLabelLeft = 30.0;
 static const CGFloat REVCurrentMoneyLabelTop = 10.0;
 static const CGFloat REVPageControllBottom = 30.0;
@@ -48,8 +49,6 @@ REVCarouselScrollViewDataSource
 - (void)viewDidLoad {
     [super viewDidLoad];
 	self.view.backgroundColor = [UIColor whiteColor];
-	UITextField *textField = [[UITextField alloc] initWithFrame:CGRectZero];
-	[textField becomeFirstResponder];
 	
 	[self createTopCarouselView];
 	[self createBottomCarouselView];
@@ -156,7 +155,6 @@ REVCarouselScrollViewDataSource
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:verConstraints];
 	self.bottomPageControll.numberOfPages = self.moneyArray.count;
-	self.bottomPageControll.currentPage = 1;
 }
 
 #pragma mark - REVCarouselScrollViewDataSource
@@ -165,19 +163,13 @@ REVCarouselScrollViewDataSource
 	return self.moneyArray.count;
 }
 
-- (UIView *)objectAtIndex:(NSUInteger)objectIndex
-			  viewAtIndex:(NSUInteger)viewIndex
-			 carouselView:(REVCarouselScrollView *)carouselView {
+- (UIView *)objectAtIndex:(NSUInteger)objectIndex carouselView:(REVCarouselScrollView *)carouselView {
 	REVMoney *money = self.moneyArray[objectIndex];
-	if ([carouselView isEqual:self.bottomCarouselView]) {
-		money = self.moneyArray[objectIndex == self.moneyArray.count-1 ? 0 : objectIndex+1];
-	}
 	
-	CGFloat yOrigin = 0;
 	CGFloat scrollViewWidth = CGRectGetWidth(carouselView.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(carouselView.frame);
-	CGRect containerFrame = CGRectMake(scrollViewWidth*viewIndex, yOrigin, scrollViewWidth, scrollViewHeight);
-	UIView *moneyContainer = [[UIView alloc] initWithFrame:containerFrame];
+	
+	UIView *moneyContainer = [[UIView alloc] initWithFrame:CGRectZero];
 	
 	CGRect currencyLabelRect = CGRectMake(REVCurrencyLabelLeft, 0, 0, 0);
 	UILabel *currencyLabel = [[UILabel alloc] initWithFrame:currencyLabelRect];
@@ -186,7 +178,7 @@ REVCarouselScrollViewDataSource
 	currencyLabel.font = [UIFont systemFontOfSize:40.0];
 	currencyLabel.textAlignment = NSTextAlignmentCenter;
 	[currencyLabel sizeToFit];
-	currencyLabel.center = CGPointMake(CGRectGetMidX(currencyLabel.frame), containerFrame.size.height/2);
+	currencyLabel.center = CGPointMake(CGRectGetMidX(currencyLabel.frame), REVCurrencyLabelTop);
 	
 	CGRect currentMoneyLabelRect = CGRectMake(REVCurrencyLabelLeft, 0, 0, 0);
 	UILabel *currentMoneyLabel = [[UILabel alloc] initWithFrame:currentMoneyLabelRect];
@@ -243,13 +235,26 @@ REVCarouselScrollViewDataSource
 		self.topPageControll.currentPage = index;
 	}
 	if ([carouselView isEqual:self.bottomCarouselView]) {
-		NSInteger currentPage = (index == self.moneyArray.count-1 ? 0: index+1);
-		self.bottomPageControll.currentPage = currentPage;
+		self.bottomPageControll.currentPage = index;
 	}
-//	if (index == 0) {
+}
+
+- (void)didViewAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
+	if ([carouselView isEqual:self.topCarouselView]) {
 		UITextField *firstTextField = self.textFieldArray[index];
 		[firstTextField becomeFirstResponder];
-//	}
+	}
+}
+
+- (void)dataIsLoadedForCarouselView:(REVCarouselScrollView *)carouselView {
+	NSInteger selectedIndex = [self.moneyArray indexOfObject:self.selectedMoney];
+	if ([carouselView isEqual:self.topCarouselView]) {
+		[self.topCarouselView scrollToPage:selectedIndex];
+	}
+	
+	if ([carouselView isEqual:self.bottomCarouselView]) {
+		[self.bottomCarouselView scrollToPage:selectedIndex+1];
+	}
 }
 
 #pragma mark - REVConverterCoreServiceDelegate

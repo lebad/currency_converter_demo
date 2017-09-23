@@ -14,13 +14,16 @@
 
 @property (nonatomic, weak) id<REVCarouselScrollViewDataSource> dataSource;
 - (void)reloadData;
+- (void)scrollToPage:(NSUInteger)page;
 
 @end
 
 @protocol REVCarouselScrollViewDataSource <NSObject>
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView;
-- (UIView *)objectAtIndex:(NSUInteger)objectIndex viewAtIndex:(NSUInteger)viewIndex carouselView:(REVCarouselScrollView *)carouselView;
+- (UIView *)objectAtIndex:(NSUInteger)objectIndex carouselView:(REVCarouselScrollView *)carouselView;
 - (void)didPageAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView;
+- (void)didViewAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView;
+- (void)dataIsLoadedForCarouselView:(REVCarouselScrollView *)carouselView;
 
 @end

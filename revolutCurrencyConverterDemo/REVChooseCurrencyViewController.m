@@ -123,6 +123,7 @@ REVCarouselScrollViewDataSource
 	
 	REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
 	exchangeVC.moneyArray = self.moneyArray;
+	exchangeVC.selectedMoney = self.moneyArray[self.pageControll.currentPage];
 	[self.coreService addDelegate:exchangeVC];
 	[self.navigationController pushViewController:exchangeVC animated:YES];
 }
@@ -145,22 +146,20 @@ REVCarouselScrollViewDataSource
 	return self.moneyArray.count;
 }
 
-- (UIView *)objectAtIndex:(NSUInteger)objectIndex
-			  viewAtIndex:(NSUInteger)viewIndex
-			 carouselView:(REVCarouselScrollView *)carouselView {
+- (UIView *)objectAtIndex:(NSUInteger)objectIndex carouselView:(REVCarouselScrollView *)carouselView {
 	REVMoney *money = self.moneyArray[objectIndex];
-	CGFloat yOrigin = 0;
+
 	CGFloat scrollViewWidth = CGRectGetWidth(self.carouselView.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.carouselView.frame);
-	CGRect containerFrame = CGRectMake(scrollViewWidth*viewIndex, yOrigin, scrollViewWidth, scrollViewHeight);
-	UIView *moneyContainer = [[UIView alloc] initWithFrame:containerFrame];
+	
+	UIView *moneyContainer = [[UIView alloc] initWithFrame:CGRectZero];
 	UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 	moneyLabel.text = [NSString stringWithFormat:@"%@ %@", money.currency.sign, [money.amount stringForNumberWithCurrencyStyle]];
 	moneyLabel.textColor = [UIColor blackColor];
 	moneyLabel.font = [UIFont systemFontOfSize:70.0];
 	moneyLabel.textAlignment = NSTextAlignmentCenter;
 	[moneyLabel sizeToFit];
-	moneyLabel.center = CGPointMake(containerFrame.size.width/2, (containerFrame.size.height/2)-100.0);
+	moneyLabel.center = CGPointMake(scrollViewWidth/2, (scrollViewHeight/2)-100.0);
 	[moneyContainer addSubview:moneyLabel];
 	UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 	descriptionLabel.text = [NSString stringWithFormat:@"%@ - %@", money.currency.code, money.currency.name];
@@ -168,13 +167,21 @@ REVCarouselScrollViewDataSource
 	descriptionLabel.font = [UIFont systemFontOfSize:20.0];
 	descriptionLabel.textAlignment = NSTextAlignmentCenter;
 	[descriptionLabel sizeToFit];
-	descriptionLabel.center = CGPointMake(containerFrame.size.width/2, moneyLabel.center.y+70.0);
+	descriptionLabel.center = CGPointMake(scrollViewWidth/2, moneyLabel.center.y+70.0);
 	[moneyContainer addSubview:descriptionLabel];
 	return moneyContainer;
 }
 
 - (void)didPageAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
 	self.pageControll.currentPage = index;
+}
+
+- (void)didViewAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
+	
+}
+
+- (void)dataIsLoadedForCarouselView:(REVCarouselScrollView *)carouselView {
+	
 }
 
 @end
