@@ -45,6 +45,8 @@
 	
 	self.contentSize = CGSizeMake(scrollViewWidth*(self.count+2), scrollViewHeight);
 	
+	//default scroll to the second
+	[self scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
 	[self.dataSource didPageAtIndex:0 carouselView:self];
 }
 
@@ -63,21 +65,23 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	CGFloat scrollViewWidth = CGRectGetWidth(scrollView.frame);
-	CGFloat scrollViewHeight = CGRectGetHeight(scrollView.frame);
+	CGFloat scrollViewWidth = CGRectGetWidth(self.frame);
+	CGFloat scrollViewHeight = CGRectGetHeight(self.frame);
 	
-	int currentPage = floor((scrollView.contentOffset.x - scrollView.frame.size.width / (self.count+2)) / scrollView.frame.size.width) + 1;
-	if (currentPage==0) {
-		//go last but 1 page
-		[scrollView scrollRectToVisible:CGRectMake(scrollViewWidth * self.count,0,scrollViewWidth,scrollViewHeight) animated:NO];
-	} else if (currentPage==(self.count+1)) {
-		[scrollView scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
+	//when last element
+	if (self.contentOffset.x == scrollViewWidth*(self.count+1)) {
+		//scroll to the second
+		[self scrollRectToVisible:CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight) animated:NO];
+	}
+	//when first element
+	if (self.contentOffset.x == 0) {
+		//scroll to the last but one
+		[self scrollRectToVisible:CGRectMake(scrollViewWidth * self.count,0,scrollViewWidth,scrollViewHeight) animated:NO];
 	}
 	
-	CGFloat pageWidth = CGRectGetWidth(scrollView.frame);
-	int currentPageForControll = floor((scrollView.contentOffset.x-pageWidth/2)/pageWidth)+1;
-	NSUInteger currentPageMoney = currentPageForControll==3 ? 0 : currentPageForControll;
-	[self.dataSource didPageAtIndex:currentPageMoney carouselView:self];
+	int currentPage = floor((self.contentOffset.x - self.frame.size.width / (self.count+2)) / self.frame.size.width);
+	[self.dataSource didPageAtIndex:currentPage carouselView:self];
+	
 }
 
 @end

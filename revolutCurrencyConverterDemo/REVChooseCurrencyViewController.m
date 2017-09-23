@@ -135,6 +135,10 @@ REVCarouselScrollViewDataSource
 	[self.carouselView reloadData];
 }
 
+- (void)showAlertWithText:(NSString *)text {
+	
+}
+
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {

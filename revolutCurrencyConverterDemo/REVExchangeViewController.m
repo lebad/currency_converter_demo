@@ -159,9 +159,6 @@ REVCarouselScrollViewDataSource
 	self.bottomPageControll.currentPage = 1;
 }
 
-#pragma mark - REVConverterCoreServiceDelegate
-
-
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
@@ -253,6 +250,16 @@ REVCarouselScrollViewDataSource
 		UITextField *firstTextField = self.textFieldArray[index];
 		[firstTextField becomeFirstResponder];
 //	}
+}
+
+#pragma mark - REVConverterCoreServiceDelegate
+
+- (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray {
+	
+}
+
+- (void)showAlertWithText:(NSString *)text {
+	
 }
 
 @end
