@@ -51,13 +51,13 @@
 }
 
 - (void)calculateConvertedMoney:(REVMoney *)money {
+	if (!money) {
+		return;
+	}
+	
 	self.convertedMoney = money;
 	
 	[self calculateWalletAndShow];
-}
-
-- (void)resignCalculatedMoney {
-	self.convertedMoney = nil;
 }
 
 - (void)start {
@@ -98,13 +98,16 @@
 			[self calculateRateAndShow];
 			self.wallet = [[REVWallet alloc] initWithMoneyArray:self.moneyArray
 											currencyRateService:self.rateConverter];
+			if (!self.convertedMoney) {
+				return;
+			}
 			[self calculateWalletAndShow];
 		}
 	}];
 }
 
 - (void)calculateWalletAndShow {
-	if (!self.wallet || !self.rateConverter || !self.directDeltaCurrency || !self.convertedMoney) {
+	if (!self.wallet || !self.rateConverter || !self.directDeltaCurrency) {
 		return;
 	}
 	if (!self.convertedMoney) {
@@ -114,10 +117,26 @@
 	}
 	
 	REVRequestMoney *request = [REVRequestMoney requestWith:self.convertedMoney targetCurrency:self.directDeltaCurrency.toCurrency];
-	REVMoney *money = [self.wallet calculateRequest:request];
-	NSString *moneyText = [NSString stringWithFormat:@"+%@", [money.amount stringForNumberWithCurrencyStyle]];
+	REVMoney *calculatedMoney = [self.wallet calculateRequest:request];
+	
+	REVMoney *convertedWalletBalance = [self.wallet moneyAfterCalculatingForCurrency:self.convertedMoney.currency];
+	NSString *convertedWalletBalanceString = [NSString stringWithFormat:@"You have %@%@",
+											  convertedWalletBalance.currency.sign,
+											  [convertedWalletBalance.amount stringForNumberWithCurrencyStyle]];
+	
+	REVMoney *calculatedWalletBalance = [self.wallet moneyAfterCalculatingForCurrency:calculatedMoney.currency];
+	NSString *calculatedWalletBalanceString = [NSString stringWithFormat:@"You have %@%@",
+											   calculatedWalletBalance.currency.sign,
+											   [calculatedWalletBalance.amount stringForNumberWithCurrencyStyle]];
+	
+	NSString *moneyText = @"";
+	if ([calculatedMoney.amount compare:[NSDecimalNumber decimalNumberWithString:@"0"]] != NSOrderedSame) {
+		moneyText = [NSString stringWithFormat:@"+%@", [calculatedMoney.amount stringForNumberWithCurrencyStyle]];
+	}
 	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
 		[delegate showCalculatedMoneyText:moneyText];
+		[delegate showFromMoneyBalanceText:convertedWalletBalanceString];
+		[delegate showToMoneyBalanceText:calculatedWalletBalanceString];
 	}
 }
 
@@ -160,6 +179,14 @@
 	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
 		[delegate showAlertWithText:text];
 	}
+}
+
+- (void)showFromMoneyBalanceText:(NSString *)text {
+	
+}
+
+- (void)showToMOneyBalaneText:(NSString *)text {
+	
 }
 
 @end

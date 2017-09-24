@@ -16,7 +16,6 @@
 - (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate;
 - (void)calculateDeltaCurrency:(REVDeltaCurrency *)deltaCurrency;
 - (void)calculateConvertedMoney:(REVMoney *)money;
-- (void)resignCalculatedMoney;
 - (void)start;
 
 @end
@@ -28,4 +27,6 @@
 - (void)showDirectRateText:(NSString *)text;
 - (void)showInversRateText:(NSString *)text;
 - (void)showCalculatedMoneyText:(NSString *)text;
+- (void)showFromMoneyBalanceText:(NSString *)text;
+- (void)showToMoneyBalanceText:(NSString *)text;
 @end

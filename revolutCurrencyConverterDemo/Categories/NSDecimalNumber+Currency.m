@@ -10,6 +10,13 @@
 
 @implementation NSDecimalNumber (Currency)
 
+- (NSDecimalNumber *)currencyDecimalNumberByAddingBy:(NSDecimalNumber *)number {
+	NSDecimalNumberHandler *roundUpHandler = [self roundHandler];
+	NSDecimalNumber *moneyAmount = [self decimalNumberByAdding:number
+												   withBehavior:roundUpHandler];
+	return moneyAmount;
+}
+
 - (NSDecimalNumber *)currencyDecimalNumberBySubtractingBy:(NSDecimalNumber *)number {
 	NSDecimalNumberHandler *roundUpHandler = [self roundHandler];
 	NSDecimalNumber *moneyAmount = [self decimalNumberBySubtracting:number

@@ -28,12 +28,16 @@ UITextFieldDelegate
 @property (nonatomic, strong) UIPageControl *topPageControll;
 @property (nonatomic, strong) UIPageControl *bottomPageControll;
 
-@property (nonatomic, copy) NSMutableArray<UITextField *> *textFieldArray;
-@property (nonatomic, copy) NSMutableArray<UILabel *> *textLabelArray;
-@property (nonatomic, copy) NSMutableArray<UILabel *> *rateLabelArray;
+@property (nonatomic, strong) NSMutableArray<UITextField *> *textFieldArray;
+@property (nonatomic, strong) NSMutableArray<UILabel *> *textLabelArray;
+@property (nonatomic, strong) NSMutableArray<UILabel *> *rateLabelArray;
+@property (nonatomic, strong) NSMutableArray<UILabel *> *topWalletLabelArray;
+@property (nonatomic, strong) NSMutableArray<UILabel *> *bottomWalletLabelArray;
 @property (nonatomic, weak) UITextField *currentTextField;
 @property (nonatomic, weak) UILabel *currentTextLabel;
 @property (nonatomic, weak) UILabel *currentRateLabel;
+@property (nonatomic, weak) UILabel *currentTopWalletLabel;
+@property (nonatomic, weak) UILabel *currentBottomWalletLabel;
 
 @property (nonatomic, strong) REVDeltaCurrency *deltaCurrency;
 
@@ -49,6 +53,8 @@ UITextFieldDelegate
 		_textFieldArray = [NSMutableArray new];
 		_textLabelArray = [NSMutableArray new];
 		_rateLabelArray = [NSMutableArray new];
+		_topWalletLabelArray = [NSMutableArray new];
+		_bottomWalletLabelArray = [NSMutableArray new];
 	}
 	return self;
 }
@@ -173,7 +179,6 @@ UITextFieldDelegate
 	REVMoney *money = self.moneyArray[objectIndex];
 	
 	CGFloat scrollViewWidth = CGRectGetWidth(carouselView.frame);
-	CGFloat scrollViewHeight = CGRectGetHeight(carouselView.frame);
 	
 	UIView *moneyContainer = [[UIView alloc] initWithFrame:CGRectZero];
 	
@@ -197,6 +202,11 @@ UITextFieldDelegate
 	currentMoneyLabel.center =
 	CGPointMake(CGRectGetMidX(currentMoneyLabel.frame), CGRectGetMaxY(currencyLabel.frame)+REVCurrentMoneyLabelTop);
 	[moneyContainer addSubview:currentMoneyLabel];
+	if ([carouselView isEqual:self.topCarouselView]) {
+		[self.topWalletLabelArray addObject:currentMoneyLabel];
+	} else {
+		[self.bottomWalletLabelArray addObject:currentMoneyLabel];
+	}
 	
 	if ([carouselView isEqual:self.topCarouselView]) {
 		CGFloat textFieldWidth = scrollViewWidth - CGRectGetMaxX(currencyLabel.frame) - REVTextFieldLeft;
@@ -251,19 +261,27 @@ UITextFieldDelegate
 	if ([self.deltaCurrency isValid]) {
 		[self.coreService calculateDeltaCurrency:self.deltaCurrency];
 	}
+	
+	REVMoney *currentWalletMoney = self.moneyArray[self.topPageControll.currentPage];
+	REVMoney *convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:@"0"];
+	[self.coreService calculateConvertedMoney:convertedMoney];
 }
 
 - (void)didViewAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
 	if ([carouselView isEqual:self.topCarouselView]) {
 		self.currentTextField = self.textFieldArray[index];
+		self.currentTopWalletLabel = self.topWalletLabelArray[index];
 		[self.currentTextField becomeFirstResponder];
 	}
 	if ([carouselView isEqual:self.bottomCarouselView]) {
 		self.currentTextLabel = self.textLabelArray[index];
 		self.currentRateLabel = self.rateLabelArray[index];
+		self.currentBottomWalletLabel = self.bottomWalletLabelArray[index];
 	}
-	
-	[self.coreService resignCalculatedMoney];
+	[self clearUI];
+}
+
+- (void)clearUI {
 	for (UITextField *textField in self.textFieldArray) {
 		textField.text = nil;
 	}
@@ -306,18 +324,33 @@ UITextFieldDelegate
 	self.currentTextLabel.text = text;
 }
 
+- (void)showFromMoneyBalanceText:(NSString *)text {
+	self.currentTopWalletLabel.text = text;
+}
+
+- (void)showToMoneyBalanceText:(NSString *)text {
+	self.currentBottomWalletLabel.text = text;
+}
+
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 	NSString *newString = @"";
 	newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+	
 	newString = [newString stringByReplacingOccurrencesOfString:@"-" withString:@""];
 	
 	REVMoney *currentWalletMoney = self.moneyArray[self.topPageControll.currentPage];
-	REVMoney *convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:newString];
+	REVMoney *convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:@"0"];
+	if (newString.length) {
+		convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:newString];
+	}
 	[self.coreService calculateConvertedMoney:convertedMoney];
 	
-	newString = [@"-" stringByAppendingString:newString];
+	if (newString.length) {
+		newString = [@"-" stringByAppendingString:newString];
+	}
+	
 	textField.text = newString;
 	
 	return NO;

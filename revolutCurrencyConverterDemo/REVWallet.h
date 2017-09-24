@@ -29,7 +29,9 @@ typedef NS_ENUM(NSUInteger, REVWalletErrorCode) {
 - (instancetype)initWithMoneyArray:(NSArray<REVMoney *> *)moneyArray
 			   currencyRateService:(id<REVRateServiceProtocol>)rateService;
 - (REVMoney *)calculateRequest:(REVRequestMoney *)request;
+- (REVMoney *)moneyAfterCalculatingForCurrency:(REVCurrency *)currency;
 - (REVMoney *)moneyForCurrency:(REVCurrency *)currency;
+- (void)resignLastCalculating;
 - (void)exchangeLastCalculating;
 
 @end

@@ -13,6 +13,7 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 @interface REVWallet ()
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, REVMoney *> *walletDictionary;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, REVMoney *> *preWalletDictionary;
 @property (nonatomic, weak) id<REVRateServiceProtocol> rateService;
 
 @property (nonatomic, strong) REVRequestMoney *currentRequestMoney;
@@ -28,8 +29,10 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 	self = [super init];
 	if (self) {
 		_walletDictionary = [NSMutableDictionary dictionaryWithCapacity:moneyArray.count];
+		_preWalletDictionary = [NSMutableDictionary dictionaryWithCapacity:moneyArray.count];
 		for (REVMoney *money in moneyArray) {
 			_walletDictionary[money.currency.code] = money;
+			_preWalletDictionary[money.currency.code] = money;
 		}
 		_rateService = rateService;
 	}
@@ -42,6 +45,13 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 	if ([self isNotEnoughMoney:self.currentRequestMoney.removedMoney]) {
 		[self sendError];
 	}
+	
+	REVMoney *firstMoney = [self substractMoney:self.currentRequestMoney.removedMoney];
+	self.preWalletDictionary[firstMoney.currency.code] = firstMoney;
+	
+	REVMoney *secondMoney = [self addingMoney:self.calculatedMoney];
+	self.preWalletDictionary[secondMoney.currency.code] = secondMoney;
+	
 	return self.calculatedMoney;
 }
 
@@ -49,12 +59,23 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 	return self.walletDictionary[currency.code];
 }
 
+- (REVMoney *)moneyAfterCalculatingForCurrency:(REVCurrency *)currency {
+	return self.preWalletDictionary[currency.code];
+}
+
+- (void)resignLastCalculating {
+	self.preWalletDictionary = self.walletDictionary;
+}
+
 - (void)exchangeLastCalculating {
 	if ([self isNotEnoughMoney:self.currentRequestMoney.removedMoney]) {
 		return;
 	}
-	[self substractMoney:self.currentRequestMoney.removedMoney];
-	[self substractMoney:self.calculatedMoney];
+	REVMoney *firstMoney = [self substractMoney:self.currentRequestMoney.removedMoney];
+	self.walletDictionary[firstMoney.currency.code] = firstMoney;
+	
+	REVMoney *secondMoney = [self addingMoney:self.calculatedMoney];
+	self.walletDictionary[secondMoney.currency.code] = secondMoney;
 }
 
 #pragma mark - Private
@@ -81,11 +102,18 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 	[self.delegate errorOccurred:error];
 }
 
-- (void)substractMoney:(REVMoney *)money {
+- (REVMoney *)substractMoney:(REVMoney *)money {
 	REVMoney *currentMoneyInWallet = self.walletDictionary[money.currency.code];
 	NSDecimalNumber *newAmount = [currentMoneyInWallet.amount currencyDecimalNumberBySubtractingBy:money.amount];
 	REVMoney *moneyAfterRemoving = [[currentMoneyInWallet class] moneyAmount:newAmount];
-	self.walletDictionary[money.currency.code] = moneyAfterRemoving;
+	return moneyAfterRemoving;
+}
+
+- (REVMoney *)addingMoney:(REVMoney *)money {
+	REVMoney *currentMoneyInWallet = self.walletDictionary[money.currency.code];
+	NSDecimalNumber *newAmount = [currentMoneyInWallet.amount currencyDecimalNumberByAddingBy:money.amount];
+	REVMoney *moneyAfterAdding = [[currentMoneyInWallet class] moneyAmount:newAmount];
+	return moneyAfterAdding;
 }
 
 @end

@@ -97,7 +97,7 @@
 	[self.wallet exchangeLastCalculating];
 	
 	[self expectMoney:[REVGBPMoney moneyAmountString:@"49"]];
-	[self expectMoney:[REVUSDMoney moneyAmountString:@"32.68"]];
+	[self expectMoney:[REVUSDMoney moneyAmountString:@"167.32"]];
 }
 
 - (void)testExchangeEURMoneyToGPP {
@@ -108,7 +108,7 @@
 	[self.wallet exchangeLastCalculating];
 	
 	[self expectMoney:[REVEURMoney moneyAmountString:@"87.55"]];
-	[self expectMoney:[REVGBPMoney moneyAmountString:@"88.64"]];
+	[self expectMoney:[REVGBPMoney moneyAmountString:@"111.36"]];
 }
 
 - (void)testExchangeUSDMoneyToEUR {
@@ -119,7 +119,7 @@
 	[self.wallet exchangeLastCalculating];
 	
 	[self expectMoney:[REVEURMoney moneyAmountString:@"12.66"]];
-	[self expectMoney:[REVGBPMoney moneyAmountString:@"27.43"]];
+	[self expectMoney:[REVGBPMoney moneyAmountString:@"172.57"]];
 }
 
 - (void)testExchangeToDoNothingBecauseNotEnoughMoneyAndNotSendErrorTwice {

@@ -152,6 +152,14 @@ REVCarouselScrollViewDataSource
 	
 }
 
+- (void)showFromMoneyBalanceText:(NSString *)text {
+	
+}
+
+- (void)showToMoneyBalanceText:(NSString *)text {
+	
+}
+
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
