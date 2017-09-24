@@ -14,7 +14,6 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, REVMoney *> *walletDictionary;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, REVMoney *> *preWalletDictionary;
-@property (nonatomic, weak) id<REVRateServiceProtocol> rateService;
 
 @property (nonatomic, strong) REVRequestMoney *currentRequestMoney;
 @property (nonatomic, strong) REVMoney *calculatedMoney;
@@ -24,8 +23,7 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 
 @implementation REVWallet
 
-- (instancetype)initWithMoneyArray:(NSArray<REVMoney *> *)moneyArray
-			   currencyRateService:(id<REVRateServiceProtocol>)rateService {
+- (instancetype)initWithMoneyArray:(NSArray<REVMoney *> *)moneyArray {
 	self = [super init];
 	if (self) {
 		_walletDictionary = [NSMutableDictionary dictionaryWithCapacity:moneyArray.count];
@@ -34,9 +32,12 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 			_walletDictionary[money.currency.code] = money;
 			_preWalletDictionary[money.currency.code] = money;
 		}
-		_rateService = rateService;
 	}
 	return self;
+}
+
+- (NSArray<REVMoney *> *)moneyArray {
+	return self.walletDictionary.allValues;
 }
 
 - (REVMoney *)calculateRequest:(REVRequestMoney *)request {
@@ -44,6 +45,8 @@ NSString *const REVWalletErrorDomain = @"com.revolutcurrencyconverterdemo.wallet
 	[self calculateRequest];
 	if ([self isNotEnoughMoney:self.currentRequestMoney.removedMoney]) {
 		[self sendError];
+	} else {
+		[self.delegate successCalculating];
 	}
 	
 	REVMoney *firstMoney = [self substractMoney:self.currentRequestMoney.removedMoney];

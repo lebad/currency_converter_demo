@@ -24,7 +24,6 @@ REVCarouselScrollViewDataSource
 @property (nonatomic, strong) UIPageControl *pageControll;
 @property (nonatomic, strong) UIButton *exchangeButton;
 
-@property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
 @property (nonatomic, assign) NSUInteger currentPageMoney;
 
 @end
@@ -44,9 +43,11 @@ REVCarouselScrollViewDataSource
 	[self.coreService start];
 }
 
-- (void) viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:YES animated:animated];
+	
+	[self.carouselView scrollToPage:self.coreService.selectedIndex];
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -119,11 +120,9 @@ REVCarouselScrollViewDataSource
 #pragma mark - Actions
 
 - (void)exchangeButtonAction:(UIButton *)sender {
-	
 	REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
 	exchangeVC.coreService = self.coreService;
-	exchangeVC.moneyArray = self.moneyArray;
-	exchangeVC.selectedMoney = self.moneyArray[self.pageControll.currentPage];
+	self.coreService.selectedIndex = self.pageControll.currentPage;
 	[self.coreService addDelegate:exchangeVC];
 	[self.navigationController pushViewController:exchangeVC animated:YES];
 }
@@ -131,8 +130,9 @@ REVCarouselScrollViewDataSource
 #pragma mark - REVConverterCoreServiceDelegate
 
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray {
-	self.moneyArray = moneyArray;
-	self.pageControll.numberOfPages = self.moneyArray.count;
+	self.pageControll.numberOfPages = self.coreService.moneyArray.count;
+	
+	[self.carouselView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 	[self.carouselView reloadData];
 }
 
@@ -160,14 +160,18 @@ REVCarouselScrollViewDataSource
 	
 }
 
+- (void)showNotEnoughBalance {
+	
+}
+
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
-	return self.moneyArray.count;
+	return self.coreService.moneyArray.count;
 }
 
 - (UIView *)objectAtIndex:(NSUInteger)objectIndex carouselView:(REVCarouselScrollView *)carouselView {
-	REVMoney *money = self.moneyArray[objectIndex];
+	REVMoney *money = self.coreService.moneyArray[objectIndex];
 
 	CGFloat scrollViewWidth = CGRectGetWidth(self.carouselView.frame);
 	CGFloat scrollViewHeight = CGRectGetHeight(self.carouselView.frame);
@@ -201,7 +205,9 @@ REVCarouselScrollViewDataSource
 }
 
 - (void)dataIsLoadedForCarouselView:(REVCarouselScrollView *)carouselView {
-	
+	if ([carouselView isEqual:self.carouselView]) {
+		[self.carouselView scrollToPage:self.coreService.selectedIndex];
+	}
 }
 
 @end

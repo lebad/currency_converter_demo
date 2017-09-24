@@ -17,6 +17,7 @@ typedef NS_ENUM(NSUInteger, REVWalletErrorCode) {
 };
 
 @protocol REVWalletDelegate <NSObject>
+- (void)successCalculating;
 - (void)errorOccurred:(NSError *)error;
 @end
 
@@ -25,9 +26,11 @@ typedef NS_ENUM(NSUInteger, REVWalletErrorCode) {
 @interface REVWallet : NSObject
 
 @property (nonatomic, weak) id<REVWalletDelegate> delegate;
+@property (nonatomic, weak) id<REVRateServiceProtocol> rateService;
 
-- (instancetype)initWithMoneyArray:(NSArray<REVMoney *> *)moneyArray
-			   currencyRateService:(id<REVRateServiceProtocol>)rateService;
+@property (nonatomic, strong, readonly) NSArray<REVMoney *> *moneyArray;
+
+- (instancetype)initWithMoneyArray:(NSArray<REVMoney *> *)moneyArray;
 - (REVMoney *)calculateRequest:(REVRequestMoney *)request;
 - (REVMoney *)moneyAfterCalculatingForCurrency:(REVCurrency *)currency;
 - (REVMoney *)moneyForCurrency:(REVCurrency *)currency;

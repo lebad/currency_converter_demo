@@ -45,6 +45,11 @@ UITextFieldDelegate
 
 @implementation REVExchangeViewController
 
+- (void)dealloc
+{
+	[self.coreService removeObject:self];
+}
+
 - (instancetype)init
 {
 	self = [super init];
@@ -63,6 +68,7 @@ UITextFieldDelegate
     [super viewDidLoad];
 	self.view.backgroundColor = [UIColor whiteColor];
 	
+	[self createExchageButton];
 	[self createTopCarouselView];
 	[self createBottomCarouselView];
 	[self createTopPageControll];
@@ -70,6 +76,15 @@ UITextFieldDelegate
 	
 	[self.topCarouselView reloadData];
 	[self.bottomCarouselView reloadData];
+}
+
+- (void)createExchageButton {
+	UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Exchange"
+																	style:UIBarButtonItemStylePlain
+																   target:self
+																   action:@selector(echangeAction:)];
+	self.navigationItem.rightBarButtonItem = rightButton;
+	self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (void)createTopCarouselView {
@@ -139,7 +154,7 @@ UITextFieldDelegate
 											views:NSDictionaryOfVariableBindings(pageControll, topLayoutGuide)];
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:verConstraints];
-	self.topPageControll.numberOfPages = self.moneyArray.count;
+	self.topPageControll.numberOfPages = self.coreService.moneyArray.count;
 }
 
 - (void)createBottomPageControll {
@@ -166,17 +181,24 @@ UITextFieldDelegate
 													views:NSDictionaryOfVariableBindings(pageControll, topLayoutGuide)];
 	[self.view addConstraints:horConstraints];
 	[self.view addConstraints:verConstraints];
-	self.bottomPageControll.numberOfPages = self.moneyArray.count;
+	self.bottomPageControll.numberOfPages = self.coreService.moneyArray.count;
+}
+
+#pragma mark - Actions
+
+- (void)echangeAction:(UIBarButtonItem *)item {
+	[self.coreService exchange];
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
-	return self.moneyArray.count;
+	return self.coreService.moneyArray.count;
 }
 
 - (UIView *)objectAtIndex:(NSUInteger)objectIndex carouselView:(REVCarouselScrollView *)carouselView {
-	REVMoney *money = self.moneyArray[objectIndex];
+	REVMoney *money = self.coreService.moneyArray[objectIndex];
 	
 	CGFloat scrollViewWidth = CGRectGetWidth(carouselView.frame);
 	
@@ -250,21 +272,28 @@ UITextFieldDelegate
 	if ([carouselView isEqual:self.topCarouselView]) {
 		self.topPageControll.currentPage = index;
 		
-		self.deltaCurrency.fromCurrency = self.moneyArray[index].currency;
+		self.deltaCurrency.fromCurrency = self.coreService.moneyArray[index].currency;
+		
+		self.coreService.selectedIndex = index;
 	}
 	if ([carouselView isEqual:self.bottomCarouselView]) {
 		self.bottomPageControll.currentPage = index;
 		
-		self.deltaCurrency.toCurrency = self.moneyArray[index].currency;
+		self.deltaCurrency.toCurrency = self.coreService.moneyArray[index].currency;
 	}
 	
 	if ([self.deltaCurrency isValid]) {
 		[self.coreService calculateDeltaCurrency:self.deltaCurrency];
 	}
 	
-	REVMoney *currentWalletMoney = self.moneyArray[self.topPageControll.currentPage];
+	REVMoney *currentWalletMoney = self.coreService.moneyArray[self.topPageControll.currentPage];
 	REVMoney *convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:@"0"];
 	[self.coreService calculateConvertedMoney:convertedMoney];
+	
+	if ([self.coreService.moneyArray[self.topPageControll.currentPage]
+			 isEqualToMoney:self.coreService.moneyArray[self.bottomPageControll.currentPage]]) {
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
 }
 
 - (void)didViewAtIndex:(NSUInteger)index carouselView:(REVCarouselScrollView *)carouselView {
@@ -291,13 +320,12 @@ UITextFieldDelegate
 }
 
 - (void)dataIsLoadedForCarouselView:(REVCarouselScrollView *)carouselView {
-	NSInteger selectedIndex = [self.moneyArray indexOfObject:self.selectedMoney];
 	if ([carouselView isEqual:self.topCarouselView]) {
-		[self.topCarouselView scrollToPage:selectedIndex];
+		[self.topCarouselView scrollToPage:self.coreService.selectedIndex];
 	}
 	
 	if ([carouselView isEqual:self.bottomCarouselView]) {
-		[self.bottomCarouselView scrollToPage:selectedIndex+1];
+		[self.bottomCarouselView scrollToPage:self.coreService.selectedIndex+1];
 	}
 }
 
@@ -325,11 +353,17 @@ UITextFieldDelegate
 }
 
 - (void)showFromMoneyBalanceText:(NSString *)text {
+	self.currentTopWalletLabel.textColor = [UIColor blackColor];
 	self.currentTopWalletLabel.text = text;
 }
 
 - (void)showToMoneyBalanceText:(NSString *)text {
 	self.currentBottomWalletLabel.text = text;
+}
+
+- (void)showNotEnoughBalance {
+	self.currentTopWalletLabel.textColor = [UIColor redColor];
+	self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -340,11 +374,23 @@ UITextFieldDelegate
 	
 	newString = [newString stringByReplacingOccurrencesOfString:@"-" withString:@""];
 	
-	REVMoney *currentWalletMoney = self.moneyArray[self.topPageControll.currentPage];
+	REVMoney *currentWalletMoney = self.coreService.moneyArray[self.topPageControll.currentPage];
 	REVMoney *convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:@"0"];
 	if (newString.length) {
 		convertedMoney = [REVMoney moneyCurrency:currentWalletMoney.currency amountString:newString];
 	}
+	
+	if (newString.length) {
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+	} else {
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
+	if ([self.coreService.moneyArray[self.topPageControll.currentPage]
+		 isEqualToMoney:self.coreService.moneyArray[self.bottomPageControll.currentPage]]) {
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
+	
+	
 	[self.coreService calculateConvertedMoney:convertedMoney];
 	
 	if (newString.length) {
