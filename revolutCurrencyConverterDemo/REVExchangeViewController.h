@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "REVConverterCoreService.h"
 
-@interface REVExchangeViewController : UIViewController <REVConverterCoreServiceDelegate>
+@interface REVExchangeViewController : UIViewController <REVConverterCoreServiceDelegateShowable>
 
 @property (nonatomic, strong) REVConverterCoreService *coreService;
 

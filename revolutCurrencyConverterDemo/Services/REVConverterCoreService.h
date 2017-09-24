@@ -8,15 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol REVConverterCoreServiceDelegate;
-
 @interface REVConverterCoreService : NSObject
 
 @property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
 @property (nonatomic, assign) NSUInteger selectedIndex;
 
-- (void)addDelegate:(id<REVConverterCoreServiceDelegate>)delegate;
-- (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate;
+- (void)addDelegate:(id<NSObject>)delegate;
+- (void)removeObject:(id<NSObject>)delegate;
+
 - (void)calculateDeltaCurrency:(REVDeltaCurrency *)deltaCurrency;
 - (void)calculateConvertedMoney:(REVMoney *)money;
 - (void)start;
@@ -27,6 +26,9 @@
 
 @protocol REVConverterCoreServiceDelegate <NSObject>
 - (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray;
+@end
+
+@protocol REVConverterCoreServiceDelegateShowable <NSObject>
 - (void)showAlertWithText:(NSString *)text;
 - (void)showDirectRateText:(NSString *)text;
 - (void)showInversRateText:(NSString *)text;
@@ -35,3 +37,4 @@
 - (void)showToMoneyBalanceText:(NSString *)text;
 - (void)showNotEnoughBalance;
 @end
+

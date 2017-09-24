@@ -331,10 +331,6 @@ UITextFieldDelegate
 
 #pragma mark - REVConverterCoreServiceDelegate
 
-- (void)receiveMoneyArray:(NSArray<REVMoney *> *)moneyArray {
-	
-}
-
 - (void)showAlertWithText:(NSString *)text {
 	
 }

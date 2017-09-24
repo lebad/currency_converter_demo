@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSError *walletError;
 
 @property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegate> > *delegates;
+@property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegateShowable> > *showableDelegates;
 @property (nonatomic, strong) REVDeltaCurrency *directDeltaCurrency;
 @property (nonatomic, strong) REVMoney *convertedMoney;
 @property (nonatomic, strong) REVRateConverter *rateConverter;
@@ -32,6 +33,7 @@
 	if (self) {
 		_reachabilityService = [[REVReachabilityService alloc] init];
 		_delegates = [NSHashTable weakObjectsHashTable];
+		_showableDelegates = [NSHashTable weakObjectsHashTable];
 	}
 	return self;
 }
@@ -40,12 +42,22 @@
 	return self.wallet.moneyArray;
 }
 
-- (void)addDelegate:(id<REVConverterCoreServiceDelegate>)delegate {
-	[self.delegates addObject:delegate];
+- (void)addDelegate:(id<NSObject>)delegate {
+	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegate)]) {
+		[self.delegates addObject:(id<REVConverterCoreServiceDelegate>)delegate];
+	}
+	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegateShowable)]) {
+		[self.showableDelegates addObject:(id<REVConverterCoreServiceDelegateShowable>)delegate];
+	}
 }
 
 - (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate {
-	[self.delegates removeObject:delegate];
+	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegate)]) {
+		[self.delegates removeObject:(id<REVConverterCoreServiceDelegate>)delegate];
+	}
+	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegateShowable)]) {
+		[self.showableDelegates removeObject:(id<REVConverterCoreServiceDelegateShowable>)delegate];
+	}
 }
 
 - (void)calculateDeltaCurrency:(REVDeltaCurrency *)deltaCurrency {
@@ -126,7 +138,7 @@
 		return;
 	}
 	if (!self.convertedMoney) {
-		for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+		for (id<REVConverterCoreServiceDelegateShowable> delegate in self.showableDelegates.allObjects) {
 			[delegate showCalculatedMoneyText:@""];
 		}
 	}
@@ -148,7 +160,7 @@
 	if ([calculatedMoney.amount compare:[NSDecimalNumber decimalNumberWithString:@"0"]] != NSOrderedSame) {
 		moneyText = [NSString stringWithFormat:@"+%@", [calculatedMoney.amount stringForNumberWithCurrencyStyle]];
 	}
-	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+	for (id<REVConverterCoreServiceDelegateShowable> delegate in self.showableDelegates.allObjects) {
 		[delegate showCalculatedMoneyText:moneyText];
 		
 		if (!self.walletError) {
@@ -177,7 +189,7 @@
 										 self.directDeltaCurrency.fromCurrency.sign,
 										inverseString];
 	
-	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+	for (id<REVConverterCoreServiceDelegateShowable> delegate in self.showableDelegates.allObjects) {
 		[delegate showDirectRateText:directRectStringToShow];
 		[delegate showInversRateText:inverseRectStringToShow];
 	}
@@ -194,7 +206,7 @@
 }
 
 - (void)showAlertWithText:(NSString *)text {
-	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+	for (id<REVConverterCoreServiceDelegateShowable> delegate in self.showableDelegates.allObjects) {
 		[delegate showAlertWithText:text];
 	}
 }
@@ -214,7 +226,7 @@
 											   calculatedWalletBalance.currency.sign,
 											   [calculatedWalletBalance.amount stringForNumberWithCurrencyStyle]];
 	
-	for (id<REVConverterCoreServiceDelegate> delegate in self.delegates.allObjects) {
+	for (id<REVConverterCoreServiceDelegateShowable> delegate in self.showableDelegates.allObjects) {
 		[delegate showFromMoneyBalanceText:convertedWalletBalanceString];
 		[delegate showToMoneyBalanceText:calculatedWalletBalanceString];
 		[delegate showNotEnoughBalance];

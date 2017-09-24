@@ -136,34 +136,6 @@ REVCarouselScrollViewDataSource
 	[self.carouselView reloadData];
 }
 
-- (void)showAlertWithText:(NSString *)text {
-	
-}
-
-- (void)showDirectRateText:(NSString *)text {
-	
-}
-
-- (void)showInversRateText:(NSString *)text {
-	
-}
-
-- (void)showCalculatedMoneyText:(NSString *)text {
-	
-}
-
-- (void)showFromMoneyBalanceText:(NSString *)text {
-	
-}
-
-- (void)showToMoneyBalanceText:(NSString *)text {
-	
-}
-
-- (void)showNotEnoughBalance {
-	
-}
-
 #pragma mark - REVCarouselScrollViewDataSource
 
 - (NSUInteger)numberOfItemsForCarouselView:(REVCarouselScrollView *)carouselView {
