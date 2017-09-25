@@ -10,7 +10,7 @@
 #import "REVRatesDownloader.h"
 #import "REVCurrencyRateAPIService.h"
 
-static const NSTimeInterval TimerInterval = 10.0;
+static const NSTimeInterval TimerInterval = 30.0;
 
 @interface REVCurrencyRateTimerServive ()
 @property (nonatomic, strong) NSTimer *timer;
