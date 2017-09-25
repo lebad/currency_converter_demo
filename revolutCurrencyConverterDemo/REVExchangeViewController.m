@@ -332,7 +332,15 @@ UITextFieldDelegate
 #pragma mark - REVConverterCoreServiceDelegate
 
 - (void)showAlertWithText:(NSString *)text {
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+																			 message:text
+																	  preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction *alertAction = [UIAlertAction actionWithTitle:@"OK"
+														  style:UIAlertActionStyleDefault
+														handler:nil];
+	[alertController addAction:alertAction];
 	
+	[self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)showDirectRateText:(NSString *)text {

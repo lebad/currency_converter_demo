@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSArray<REVMoney *> *moneyArray;
 @property (nonatomic, assign) NSUInteger selectedIndex;
+@property (nonatomic, assign) BOOL isReady;
 
 - (void)addDelegate:(id<NSObject>)delegate;
 - (void)removeObject:(id<NSObject>)delegate;
@@ -29,12 +30,15 @@
 @end
 
 @protocol REVConverterCoreServiceDelegateShowable <NSObject>
-- (void)showAlertWithText:(NSString *)text;
 - (void)showDirectRateText:(NSString *)text;
 - (void)showInversRateText:(NSString *)text;
 - (void)showCalculatedMoneyText:(NSString *)text;
 - (void)showFromMoneyBalanceText:(NSString *)text;
 - (void)showToMoneyBalanceText:(NSString *)text;
 - (void)showNotEnoughBalance;
+@end
+
+@protocol REVConverterCoreServiceDelegateAlertable <NSObject>
+- (void)showAlertWithText:(NSString *)text;
 @end
 

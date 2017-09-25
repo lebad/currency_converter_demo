@@ -19,6 +19,8 @@
 
 @property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegate> > *delegates;
 @property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegateShowable> > *showableDelegates;
+@property (nonatomic, strong) NSHashTable<id<REVConverterCoreServiceDelegateAlertable> > *showableAlertDelegates;
+
 @property (nonatomic, strong) REVDeltaCurrency *directDeltaCurrency;
 @property (nonatomic, strong) REVMoney *convertedMoney;
 @property (nonatomic, strong) REVRateConverter *rateConverter;
@@ -31,9 +33,11 @@
 {
 	self = [super init];
 	if (self) {
+		_isReady = NO;
 		_reachabilityService = [[REVReachabilityService alloc] init];
 		_delegates = [NSHashTable weakObjectsHashTable];
 		_showableDelegates = [NSHashTable weakObjectsHashTable];
+		_showableAlertDelegates = [NSHashTable weakObjectsHashTable];
 	}
 	return self;
 }
@@ -49,6 +53,9 @@
 	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegateShowable)]) {
 		[self.showableDelegates addObject:(id<REVConverterCoreServiceDelegateShowable>)delegate];
 	}
+	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegateAlertable)]) {
+		[self.showableAlertDelegates addObject:(id<REVConverterCoreServiceDelegateAlertable>)delegate];
+	}
 }
 
 - (void)removeObject:(id<REVConverterCoreServiceDelegate>)delegate {
@@ -57,6 +64,9 @@
 	}
 	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegateShowable)]) {
 		[self.showableDelegates removeObject:(id<REVConverterCoreServiceDelegateShowable>)delegate];
+	}
+	if ([delegate conformsToProtocol:@protocol(REVConverterCoreServiceDelegateAlertable)]) {
+		[self.showableAlertDelegates removeObject:(id<REVConverterCoreServiceDelegateAlertable>)delegate];
 	}
 }
 
@@ -121,9 +131,12 @@
 		if (error) {
 			[self showAlertWithText:@"The error occured while receiving data"];
 		} else {
+			NSLog(@"Data is ready");
 			self.rateConverter = [[REVRateConverter alloc] initWithRates:rates];
 			[self calculateRateAndShow];
 			self.wallet.rateService = self.rateConverter;
+			
+			self.isReady = YES;
 
 			if (!self.convertedMoney) {
 				return;
@@ -206,7 +219,7 @@
 }
 
 - (void)showAlertWithText:(NSString *)text {
-	for (id<REVConverterCoreServiceDelegateShowable> delegate in self.showableDelegates.allObjects) {
+	for (id<REVConverterCoreServiceDelegateAlertable> delegate in self.showableAlertDelegates.allObjects) {
 		[delegate showAlertWithText:text];
 	}
 }

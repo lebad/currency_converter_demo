@@ -15,7 +15,8 @@ static const CGFloat REVPageControlHeight = 50.0;
 <
 REVConverterCoreServiceDelegate,
 UIScrollViewDelegate,
-REVCarouselScrollViewDataSource
+REVCarouselScrollViewDataSource,
+REVConverterCoreServiceDelegateAlertable
 >
 
 @property (nonatomic, strong) REVConverterCoreService *coreService;
@@ -120,11 +121,37 @@ REVCarouselScrollViewDataSource
 #pragma mark - Actions
 
 - (void)exchangeButtonAction:(UIButton *)sender {
-	REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
-	exchangeVC.coreService = self.coreService;
-	self.coreService.selectedIndex = self.pageControll.currentPage;
-	[self.coreService addDelegate:exchangeVC];
-	[self.navigationController pushViewController:exchangeVC animated:YES];
+	if (self.coreService.isReady) {
+		REVExchangeViewController *exchangeVC = [[REVExchangeViewController alloc] init];
+		exchangeVC.coreService = self.coreService;
+		self.coreService.selectedIndex = self.pageControll.currentPage;
+		[self.coreService addDelegate:exchangeVC];
+		[self.navigationController pushViewController:exchangeVC animated:YES];
+	} else {
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+																				 message:@"We are not ready to show exchange" preferredStyle:UIAlertControllerStyleAlert];
+		UIAlertAction *alertAction = [UIAlertAction actionWithTitle:@"OK"
+															  style:UIAlertActionStyleDefault
+															handler:nil];
+		[alertController addAction:alertAction];
+		
+		[self presentViewController:alertController animated:YES completion:nil];
+	}
+}
+
+
+#pragma mark - REVConverterCoreServiceDelegateAlertable
+
+- (void)showAlertWithText:(NSString *)text {
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+																			 message:text
+																	  preferredStyle:UIAlertControllerStyleAlert];	
+	UIAlertAction *alertAction = [UIAlertAction actionWithTitle:@"OK"
+														  style:UIAlertActionStyleDefault
+														handler:nil];
+	[alertController addAction:alertAction];
+	
+	[self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark - REVConverterCoreServiceDelegate
